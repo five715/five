@@ -1,0 +1,75 @@
+.reset(){
+    *{border-image-source: initial;  border-image-slice: initial;  border-image-width: initial;  border-image-outset: initial;
+    border-image-repeat: initial;  font-family: 微软雅黑;  text-decoration: none;  -webkit-tap-highlight-color: transparent;  margin: 0px;
+    padding: 0px;  border-width: 0px;  border-color: initial;  border-style: none;  list-style: none;  outline: none;}
+    body{overflow-x: hidden; background-color: #091829;}
+    html{min-width: 1000px;}
+    img{width: 100%;display: block;}
+    a{color: inherit;}
+    .box{min-width: 1000px};
+}
+.P{
+    p{font-family: PingFangSC;font-style: normal;font-stretch: normal;letter-spacing: normal;}
+}
+.resetP(){
+    p{text-overflow: ellipsis; width: 100%; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;}
+}
+.pr(){
+    position: relative;
+}
+.pa(){
+    position: absolute;
+}
+.pf(){
+    position: fixed;
+}
+.db(){
+    display: block;
+}
+.dn(){
+    display: none;
+}
+.main(@top_y, @left_x, @width_w) {
+    position: absolute;
+    top: @top_y+0px;
+    left: @left_x+0px;
+    width: @width_w+0px;
+}
+.main2(@top_y, @left_x) {
+    position: absolute;
+    top: @top_y+0px;
+    left: @left_x+0px;
+}
+.mainP(@t){
+    .pa();
+    top: @t+0px;
+    width: 100%;
+    text-align: center;
+}
+.pfmain(@z){
+    .pf();
+    z-index: @z;
+    width: 100%;
+    height: 100%;
+}
+.fontCut(){
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}
+.mainPer(@top_y, @left_x, @width_w, @max_W : @W, @max_H : @H){
+    position: absolute;
+    .top(@top_y, @max_H);
+    .left(@left_x, @max_W);
+    .width(@width_w, @max_W);
+}
+.left(@x, @box_W : @W){
+    left: (@x / @box_W) * 100%
+}
+.top(@y, @box_H : @H){
+    top: (@y / @box_H) * 100%
+}
+.width(@w, @box_W : @W){
+    width: (@w / @box_W) * 100%
+}
