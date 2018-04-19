@@ -12,8 +12,12 @@
     body{overflow-x: hidden;max-width: @max_width+0px;}
     canvas{width:100%;display: block};
 }
-.resetP(){
-    p{text-overflow: ellipsis; width: 100%; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;}
+.resetP(@num:1){
+    text-overflow: ellipsis;
+	overflow: hidden;
+	display: -webkit-box; 
+	-webkit-line-clamp: @num;
+	-webkit-box-orient: vertical;
 }
 .pr(){
     position: relative;
