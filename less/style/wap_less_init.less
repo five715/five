@@ -146,7 +146,7 @@
     display: block;
 }
 
-.hint(){
+.hint(@index:9997){
     /* 样式放在结尾，防止 base64 图片造成拥塞 */
     @keyframes rotation {
         10% {
@@ -204,7 +204,7 @@
         right: 0;
         bottom: 0;
         background: #000;
-        z-index: 9997
+        z-index: @index;
     }
     
     .mod-orient-layer__content {
