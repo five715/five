@@ -29,6 +29,12 @@ function verify(){
 	        return false;
     	}
     }
+    //验证邮箱是否正确
+    var email = $(".popup_info .email input").val();
+    if (!validEmail(email)){
+	    alert("请输入有效的邮箱地址");
+        return false;
+    }
     //时间
     var time= $(".testDrive .time .span").text();
     if(time == "请选择时间"){
@@ -61,6 +67,11 @@ function verify(){
 	function validPhone(phone){
 	    var pattern=/^1[34578][0-9]{9}$/;
 	    return pattern.test(phone)
+	}
+	//email的验证
+	function validEmail(email){
+		var pattern = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
+		return pattern.test(email);
 	}
 }
 /*---------------Function---------------*/
