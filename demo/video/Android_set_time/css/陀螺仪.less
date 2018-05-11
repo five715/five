@@ -1,0 +1,102 @@
+@box_w: 750;
+@box_h: 1500;
+@import "I:/考拉/style/wap_less_init"; 
+
+.reset();
+html{
+    background-color: #000;
+}
+body{overflow-x: hidden;}
+canvas{ position: fixed;}
+#loading{z-index: 2;}
+#video{z-index : 1;}
+.loading{
+    @W : @box_w;
+    @H : @box_h;
+    @t : 800;
+    .pf();
+    z-index: 5;
+    width : 200%;
+    margin-left: -50%;
+    .text{
+        @W : 1500;
+        .mainContent(750-92/2,608);
+    }
+    .popup{
+        .pf();
+        background: rgba(0,0,0,0);
+        width : 100%;
+        height : 100%;
+        top:0;
+        left:0;
+        .ioc{
+            .dn();
+            .main(422,513,116);
+        }
+        .hint{
+            .dn();
+            .mainContent(512,592);
+        }
+        .close{
+            .dn();
+            .mainContent(1255,98);
+        }
+    }
+    .active{
+        animation: background 1s ;
+    }
+}
+.music{
+    @W : 750;
+    @H : 1500;
+    .main(20,675,60);
+    .pf();
+    .dn();
+    z-index: 9;
+    .yes{.dn();}
+    .no{.db();}
+}
+.active{
+    .yes{.db();}
+    .no{.dn();}
+}
+.ground{
+    @W : @box_w;
+    @H : @box_h;
+    .pf();
+    .dn();
+    .btn{
+        &_look{
+            opacity: 0;
+            .mainContent(866,401);
+        }
+        &_share{
+            opacity: 0;
+            .mainContent(1078,361);
+        }
+    }
+    
+}
+.popup_share{
+    @W : @box_w;
+    @H : @box_h;
+    .pf();
+    top : 0;
+    z-index:11;
+    .dn();
+    .ioc{
+        .mainRight(0,0,507);
+    }
+}
+@-webkit-keyframes background{
+    from{background:rgba(0,0,0,0)}
+    to{background: rgba(0,0,0,0.5)}
+}
+.s{
+    .pf();
+    top : 0;
+    left : 0;
+    font-size: 5em;
+    color: #ffffff;
+    z-index:150
+}

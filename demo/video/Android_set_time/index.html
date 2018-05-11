@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>测试安卓机设置视频时间节点</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+<link rel="stylesheet" type="text/css" href="css/style.css"/>
+<script src="js/libs/jquery-3.2.1.min.js"></script>
+<script src="js/libs/easeljs.min.js"></script>
+<script src="js/libs/preloadjs.min.js"></script>
+<script src="js/libs/soundjs.min.js"></script>
+<script src="js/libs/tweenjs.min.js"></script>
+<script src="js/Video.class.js"></script>
+</head>
+<body>
+	<canvas id="video" width="640" height="1042"></canvas>
+	<div class="s" style="position: fixed; font-size: 5em; color: #FFFFFF;"></div>
+</body>
+<script type="text/javascript">
+	var _game;
+	$(function(){
+		_game = new Video.main($("#video")[0])
+		$("canvas").on("click", function(){
+			_game.play();
+		})
+	})
+</script>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+<title>图片转化灰度</title>
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+</head>
+<style type="text/css">
+		* {
+		margin: 0;
+		padding: 0;
+		border: 0;
+	}
+	
+	img {
+		width: 100%;
+	}
+	
+	canvas {
+		width: 100%;
+		position: absolute;
+		top: 0;
+		"}
+</style>
+
+<body>
+</body>
+<script type="text/javascript">
+	$(function() {
+		gray("pic_1.jpg")
+	})
+	/**
+	 * 图片灰度处理
+	 * @param {Object} txt
+	 */
+	function gray(url) {
+		var mine_type = "image/jpeg";
+		var img = new Image()
+		img.crossOrigin = 'anonymous';
+		img.src = url;
+		img.onload = function(e) {
+			var _width = img.naturalWidth,
+				_height = img.naturalHeight;
+			$(img).hide();
+			var canvas = document.createElement("canvas");
+			canvas.height = _height;
+			canvas.width = _width;
+			var cvs = canvas.getContext("2d")
+			cvs.drawImage(img, 0, 0);
+			var imageData = cvs.getImageData(0, 0, _width, _height);
+
+			cvs.putImageData(setPxData(imageData), 0, 0);
+			var base64 = canvas.toDataURL(mine_type, 1);
+			var i = document.createElement("img");
+			i.src = base64;
+			$("body").append(i)
+		}
+
+	}
+	/**
+	 * 设置点
+	 * @param {Object} imageData
+	 */
+	function setPxData(imageData) {
+		for(var x = 0; x < imageData.width; x++) {
+			for(var y = 0; y < imageData.height; y++) {
+				var idx = (x + y * imageData.width) * 4;
+
+				var r = imageData.data[idx + 0];
+				var g = imageData.data[idx + 1];
+				var b = imageData.data[idx + 2];
+				//更新图像数据
+				var gray = CalculateGrayValue(r, g, b);
+				imageData.data[idx + 0] = gray;
+				imageData.data[idx + 1] = gray;
+				imageData.data[idx + 2] = gray;
+			}
+		}
+		return imageData;
+	}
+	/**
+	 * 灰度计算
+	 * @param {Object} rValue
+	 * @param {Object} gValue
+	 * @param {Object} bValue
+	 */
+	function CalculateGrayValue(rValue, gValue, bValue) {
+		return parseInt(rValue * 0.299 + gValue * 0.587 + bValue * 0.114);
+	}
+</script>
+
+</html>
