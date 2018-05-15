@@ -64,6 +64,108 @@ Dream.main = function(canvas){
 Dream.main.prototype = createjs.extend(Dream.main, createjs.Stage);
 Dream.main = createjs.promote(Dream.main, "Stage");
 
+/**
+ * 声音
+ */
+Dream.Sound = function(id,loo) {
+	var _this = this;
+	var __sound = null,
+		_loop = loo;
+	_this.init = function(id) {
+		_this.Container_constructor(); //构造
+		__sound = new createjs.Sound.play(id,{loop:_loop});
+		_this.on("tick", onTick)
+	}
+	_this.getDuration = function(){
+		return __sound._playbackResource.duration+0.5
+	}
+	_this.play = function(){
+		__sound.play()
+	}
+	_this.stop = function(){
+		_loop = false;
+		__sound.stop();
+	}
+	function onTick(e){
+		_this.removeEventListener("tick", onTick)
+		if(_loop) __sound.play();
+	}
+	_this.init(id)
+}
+Dream.Sound.prototype = createjs.extend(Dream.Sound, createjs.Container);
+Dream.Sound = createjs.promote(Dream.Sound, "Container");
+
+
+/**
+ *	视频
+ */
+Dream.Video = function(url){
+	var _this = this;
+	var _video = null;
+	var __bitmap = null;
+	var _lock = true;
+	_this.init = function(url){
+		_this.Container_constructor();	//构造
+		_video = document.createElement("video");
+		_video = url;
+		_video.setAttribute("playsinline", "playsinline");
+		_video.setAttribute("webkit-playsinline", "webkit-playsinline");
+		_video.addEventListener("ended", onEnded);
+		var myBuffer = new createjs.VideoBuffer(_video);
+		__bitmap  = new createjs.Bitmap(myBuffer);	
+		_this.visible = false;
+		_this.addChild(__bitmap);
+//		_this.on("tick", onTick);
+	};
+	function onTick(){
+		console.log(_video.currentTime);
+	}
+	_this.show =  function(){
+		_this.visible = true;
+	};
+	_this.hide =  function(){
+		_this.visible = false;
+	};
+	_this.unLock = function(){
+		if(_lock){
+			_video.play();
+			_video.pause();
+			_lock = false;
+		}
+	};
+	_this.getCurrentTime = function(){
+		return _video.currentTime;
+	}
+	_this.play = function(){
+		if(_this.visible == false) _this.show();
+		_video.play();
+	};
+	_this.gotoPlay = function(t){
+		_video.currentTime = t;
+		if(_this.visible == false) _this.show();
+		_video.play();
+	};
+	_this.stop = function(){
+		_video.pause();
+	};
+	_this.end = function(){
+		_video.currentTime = _video.duration - 1;
+	};
+	_this.voidEnd = function(){
+		_video.currentTime = 0;
+//		_video.currentTime = _video.duration - 1;
+	};
+	function onEnded (e) {
+		_this.voidEnd();
+		var evt = new createjs.Event(Dream.Event.VIDEO_ENDED);
+		_this.dispatchEvent(evt);
+	}
+	this.init(url);
+};
+Dream.Video.prototype = createjs.extend(Dream.Video, createjs.Container);
+Dream.Video = createjs.promote(Dream.Video, "Container");
+
+
 Dream.Bg = function(canvas){
 	var _this = this;
 	_this.init = function(){
@@ -149,5 +251,45 @@ Dream.common = {
 		shape.graphics.f( "rgba(0,0,0,1)" )
     			.dr( obj.x, obj.y, obj.w, obj.h )
   		return shape;
+	},
+	weixinSound: function(){
+		var browser = {
+		    versions: function () {
+		        var u = navigator.userAgent, app = navigator.appVersion;
+		        return {
+		            webKit: u.indexOf('AppleWebKit') > -1,
+		            ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/),
+		            android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1,
+		            weixin: u.indexOf('MicroMessenger') > -1,
+		            txnews: u.indexOf('qqnews') > -1,
+		            sinawb: u.indexOf('weibo') > -1,
+		            mqq: u.indexOf('QQ') > -1
+		        };
+		    }(),
+		    language: (navigator.browserLanguage || navigator.language).toLowerCase()
+		};
+		
+		// ios下的微信和qq自动播放视频
+		if (browser.versions.ios && (browser.versions.weixin || browser.versions.mqq)) {
+		    if (typeof WeixinJSBridge == "object" && typeof WeixinJSBridge.invoke == "function") {
+		        //已经错过事件不能再自动播放
+		    } else {
+		        if (document.addEventListener) {
+		            document.addEventListener("WeixinJSBridgeReady", loadVideo, false);
+		        } else if (document.attachEvent) {
+		            document.attachEvent("WeixinJSBridgeReady", loadVideo);
+		            document.attachEvent("onWeixinJSBridgeReady", loadVideo);
+		        }
+		    };
+		}
+		//加载视频
+		function loadVideo() {
+			Dream.common._sound = document.getElementById("bell");
+			if(!Dream.common._sound) loadVideo();
+		    Dream.common._sound.play();
+//		    alert(Dream.common._sound)
+		    Dream.common._sound.pause();
+			Dream.common._sound.currentTime = 0
+		}
 	}
 }
