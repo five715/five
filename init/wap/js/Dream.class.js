@@ -59,6 +59,29 @@ Dream.main = function(canvas){
 		
 		
 	}
+	/**
+	 *	尺寸变化
+	 */
+	_this.resize = function(){
+		width = $(window).width();
+		height = $(window).height();
+		var scale = 1;
+		if(width > height){
+			$("#canvas").attr("height", HEIGHT);
+			$("#canvas").attr("width", WIDTH);
+			scale = width / WIDTH;
+			_this.x = 0
+			_this.y = -(HEIGHT * scale - height);
+			_this.rotation = 0;	
+		}else{
+			$("#canvas").attr("height", WIDTH);
+			$("#canvas").attr("width", HEIGHT);
+			scale = width / HEIGHT;
+			_this.x = HEIGHT;
+			_this.y = -(WIDTH * scale - height) / scale
+			_this.rotation = 90;
+		}
+	};
 	_this.init(canvas);
 }
 Dream.main.prototype = createjs.extend(Dream.main, createjs.Stage);
@@ -95,11 +118,10 @@ Dream.Sound = function(id,loo) {
 Dream.Sound.prototype = createjs.extend(Dream.Sound, createjs.Container);
 Dream.Sound = createjs.promote(Dream.Sound, "Container");
 
-
 /**
  *	视频
  */
-Dream.Video = function(url){
+Media.Video = function(url){
 	var _this = this;
 	var _video = null;
 	var __bitmap = null;
@@ -107,13 +129,16 @@ Dream.Video = function(url){
 	_this.init = function(url){
 		_this.Container_constructor();	//构造
 		_video = document.createElement("video");
-		_video = url;
+		_video.src = url;
 		_video.setAttribute("playsinline", "playsinline");
 		_video.setAttribute("webkit-playsinline", "webkit-playsinline");
 		_video.addEventListener("ended", onEnded);
-		var myBuffer = new createjs.VideoBuffer(_video);
-		__bitmap  = new createjs.Bitmap(myBuffer);	
-		_this.visible = false;
+		console.log(_video);		
+		__bitmap = new createjs.Bitmap();
+		__bitmap.image = _video;
+//		var myBuffer = new createjs.VideoBuffer(_video);
+//		__bitmap  = new createjs.Bitmap(myBuffer);
+//		_this.visible = false;
 		_this.addChild(__bitmap);
 //		_this.on("tick", onTick);
 	};
@@ -157,14 +182,13 @@ Dream.Video = function(url){
 	};
 	function onEnded (e) {
 		_this.voidEnd();
-		var evt = new createjs.Event(Dream.Event.VIDEO_ENDED);
+		var evt = new createjs.Event(Media.Event.Media_ENDED);
 		_this.dispatchEvent(evt);
 	}
 	this.init(url);
 };
-Dream.Video.prototype = createjs.extend(Dream.Video, createjs.Container);
-Dream.Video = createjs.promote(Dream.Video, "Container");
-
+Media.Video.prototype = createjs.extend(Media.Video, createjs.Container);
+Media.Video = createjs.promote(Media.Video, "Container");
 
 Dream.Bg = function(canvas){
 	var _this = this;
