@@ -18,13 +18,33 @@
 	display: -webkit-box; 
 	-webkit-line-clamp: @num;
 	-webkit-box-orient: vertical;
-	word-break:keep-all;//IE6
+	//word-break:keep-all;//IE6
 }
 .active(){
 	.yes {display: none;}
 	.no {display: block;}
 	.active .yes {display: block;}
 	.active .no {display: none;}
+}
+.positive(){
+	.yes {display: none;}
+	.no {display: block;}
+	.positive .yes {display: block}
+	.positive .no {display: none;}
+}
+.lucency(){
+	.y {opacity: 0;}
+	.n {opacity: 1;}
+	.lucency .y {opacity: 1;z-index:2;} 
+	.lucency .n {opacity: 0;} 
+}
+.popup(@clarity:0.8){
+    .pf();
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,@clarity);
+	z-index:9;
 }
 .pr(){
     position: relative;
