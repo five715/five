@@ -226,4 +226,8 @@ function testDriveInit(number){
 	if(number == "pro" || number == "all" ) $(".popup_info .pro span").text("")
 	if(number == "city" || number == "all" ) $(".popup_info .city span").text("");
 	if(number == "dealer" || number == "all" ) $(".popup_info .dealer span").text("");
+	if(number == "config" || number == "all" ) {
+		$(".testDrive .selectInit").empty();
+		linkage(config)
+	}
 }

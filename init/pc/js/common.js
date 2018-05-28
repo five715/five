@@ -4,6 +4,7 @@ testDriveInit()
 /*---------------头图---------------*/
 
 
+})
 /*---------------验证---------------*/
 function verify(){
 	// 验证姓名
@@ -75,75 +76,78 @@ function verify(){
 	}
 }
 /*---------------Function---------------*/
-	function testDriveInit(number){
-		if(!number) number = "all";
-		if(number == "name" || number == "all" ) $(".address .name input").val("");
-    	if(number == "phone" || number == "all" ) $(".address .phone input").val("");
-    	if(number == "pro" || number == "all" ) $(".address .pro .span").text("XX省")
-    	if(number == "city" || number == "all" ) $(".address .city .span").text("XX市");
-    	if(number == "addr" || number == "all" ) $(".address .addr textarea").val("");
-    }
+function testDriveInit(number){
+	if(!number) number = "all";
+	if(number == "name" || number == "all" ) $(".address .name input").val("");
+	if(number == "phone" || number == "all" ) $(".address .phone input").val("");
+	if(number == "pro" || number == "all" ) $(".address .pro .span").text("XX省")
+	if(number == "city" || number == "all" ) $(".address .city .span").text("XX市");
+	if(number == "addr" || number == "all" ) $(".address .addr textarea").val("");
+	if(number == "config" || number == "all" ) {
+		$(".testDrive .selectInit").empty();
+		linkage(config)
+	}
+}
+//视频
+function funcPlayer(vid,id,w,h){
+	//暂停上一个视频
+	if(_player) _player.pause()
+	//加载视频
+	var video = new tvp.VideoInfo();
+	video.setVid(vid);
+	var player =new tvp.Player();
+	player.create({
+		width : w || $("#" + id).width(),
+		height : h || $("#" + id).height(),
+		video : video,
+		modId : id,
+		autoplay : true,
+        flashWmode:"opaque",
+        onwrite:function(){
+        	_player = player	
+        }
+	});
+}
+//轮播图
+function funcSlick(obj,prev,next){
+	obj.attr("data-slick","yes");
+	obj.slick({
+        dots: true,
+        infinite: true,
+        arrows: true,
+        draggable: false,
+        prevArrow: obj.find(prev),
+        nextArrow: obj.find(next),
+        autoplay:!1
+    });
+}
+//滚动条
+function funcScroll(obj){
+    obj.jScrollPane(
+        {
+            verticalDragMinHeight: 50,
+            verticalDragMaxHeight: 80
+        }
+    );
+}
+//选择框改变
+function funcSelectChange(obj,obj1,obj2){		
+	obj.on("change", function(){
+		var text = $(this).find("option:selected").text()
+		$(this).prev().text(text)
+		if(obj1) testDriveInit(obj1)
+		if(obj2) testDriveInit(obj2)
+	})
+}
+//导航视频
+function funcNavsPlayer(cla){
+	var _cla = cla || "active";
+	//导航
+	$(this).siblings().removeClass(_cla)
+	$(this).addClass(_cla)
 	//视频
-	function funcPlayer(vid,id,w,h){
-		//暂停上一个视频
-		if(_player) _player.pause()
-		//加载视频
-		var video = new tvp.VideoInfo();
-		video.setVid(vid);
-		var player =new tvp.Player();
-		player.create({
-			width : w || $("#" + id).width(),
-			height : h || $("#" + id).height(),
-			video : video,
-			modId : id,
-			autoplay : true,
-            flashWmode:"opaque",
-	        onwrite:function(){
-	        	_player = player	
-	        }
-		});
-	}
-	//轮播图
-	function funcSlick(obj,prev,next){
-		obj.attr("data-slick","yes");
-		obj.slick({
-	        dots: true,
-	        infinite: true,
-	        arrows: true,
-	        draggable: false,
-	        prevArrow: obj.find(prev),
-	        nextArrow: obj.find(next),
-	        autoplay:!1
-	    });
-	}
-	//滚动条
-	function funcScroll(obj){
-	    obj.jScrollPane(
-	        {
-	            verticalDragMinHeight: 50,
-	            verticalDragMaxHeight: 80
-	        }
-	    );
-	}
-	//选择框改变
-	function funcSelectChange(obj,obj1,obj2){		
-		obj.on("change", function(){
-			var text = $(this).find("option:selected").text()
-			$(this).prev().text(text)
-			if(obj1) testDriveInit(obj1)
-			if(obj2) testDriveInit(obj2)
-		})
-	}
-	//导航视频
-	function funcNavsPlayer(cla){
-		var _cla = cla || "active";
-		//导航
-		$(this).siblings().removeClass(_cla)
-		$(this).addClass(_cla)
-		//视频
-		var number = $(this).addClass(_cla).index();
-		var player = $(this).parent().next().attr("id")
-		var vid = vids[player][number];	
-		funcPlayer(vid,player)
-	}
-})
+	var number = $(this).addClass(_cla).index();
+	var player = $(this).parent().next().attr("id")
+	var vid = vids[player][number];	
+	funcPlayer(vid,player)
+}
