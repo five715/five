@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<title></title>
+<link rel="stylesheet" href="css/style.css">
+<script src="js/libs/jquery-3.2.1.min.js"></script>
+<script src="js/common.js"></script>
+<script src="js/libs/easeljs.js"></script>
+<script src="js/libs/preloadjs.min.js"></script>
+<script src="js/libs/three.min.js"></script>
+<script src="js/libs/Tween.js"></script>
+<script src="js/libs/TrackballControls.js"></script>
+<!--<script src="js/libs/Device.class.js"></script>-->
+<script src="js/Granule.class.js"></script>
+<script src="//open.mobile.qq.com/sdk/qqapi.js?_bid=152"></script>
+<script type="text/javascript" src="//res.imtt.qq.com/WebAR/Release/ARLib_v2.0.js"></script>
+<script type="text/javascript" src="js/libs/vconsole.min.js"></script>
+</head>
+<body>
+	<div id="ar-video" style="display:none">
+		<video id="video" class="video" autoplay=""></video>
+		<canvas id="canvas" style="position:absolute;left:0px;top:0px;"></canvas>
+	</div>
+	<canvas id="Granule" width="750" height="1134"></canvas>
+</body>
+<script type="text/javascript">
+//	new VConsole()
+	var ARLib = window.$ARLib || {};
+	var cameraFacing = 1;
+	var isIOS = ARLib.isIOS();
+	var isAndroid = ARLib.isAndroid();
+	ARLib.openCamera(cameraFacing, function(ret) {
+		console.log(ret)
+		if (ret) {
+			if (isIOS) {
+			}
+			if (isAndroid) {
+				document.getElementById('ar-video').style.display = '';
+			}
+		}
+	});
+</script>
+</html>
