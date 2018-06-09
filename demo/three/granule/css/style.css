@@ -12,3 +12,17 @@ body{overflow-x: hidden}
 
 .box{width: 100%; position: relative; margin: 0 auto; max-width: 640px;}
 canvas{width: 100%;position: fixed;}
+.yanhua{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 30%;
+	height: 15.9%;
+    background: url(../images/ioc_sprite.png);
+    background-size:1400%;
+    -webkit-animation: demo 1s steps(13) infinite;
+}
+@-webkit-keyframes demo{
+    0%{ background-position: 0 0 }
+    100%{ background-position: 100% 0} 
+}

@@ -36,6 +36,9 @@ function onGameStart(){
 function onGameOver(){
 	
 }
+function removeYanhua(){
+	_game.removeYanhua()
+}
 /**
  * 文字dot
  */
