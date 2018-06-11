@@ -8,7 +8,7 @@ Demo.kType = {
 	GRAVITY: 1
 }
 Demo.Event = {
-	
+	YANHUA_OVER :"yanhuaOver"
 }
 /**
  *	预先加载
@@ -16,7 +16,6 @@ Demo.Event = {
 Demo.Preload = {
 	_queue : null,	//loder
 	_images : [
-		{id:"bg", src:"panorama_bg.jpg"},
 	],
 	_sounds : [
 	
@@ -25,8 +24,13 @@ Demo.Preload = {
 	 *	初始化
 	 */
 	init : function(){
+		for(var images = [],i = 1 ; i < 65 ; i ++){
+			var obj = {id:"y"+i,src:'yanhua_'+i+'.png'};
+			
+			images.push(obj)
+		}
 		this._queue = new createjs.LoadQueue(true);
-		this._queue.loadManifest(this._images, false, "images/");
+		this._queue.loadManifest(images, false, "res/");
 //		this._queue.loadManifest(this._sounds, false, "");
 //		createjs.Sound.registerSounds(this._sounds);
 	},
@@ -60,6 +64,7 @@ Demo.main = function(canvas){
 	var _this = this;
 	var WIDTH = 414,
 		HEIGHT = 736;
+	var FPS=60;
 	var __camera = null,	//摄像头
 		__scene = null,		//场景
 		__room = null,
@@ -83,6 +88,11 @@ Demo.main = function(canvas){
 		_radian = 0
 	var _tween = false;
 	_this.init = function(container){
+//		_this.Stage_constructor(container); //继承stage
+//		createjs.Ticker.setFPS = FPS; //帧频
+//		createjs.Ticker.addEventListener('tick', _this); //按照帧频更新舞台
+		
+		
 		__camera = new THREE.PerspectiveCamera(
 			CAMERA.fov,
 			WIDTH/HEIGHT,
@@ -105,27 +115,37 @@ Demo.main = function(canvas){
 		__scene.add(light);
 		lightInit();
 //		_this.setView();
-		_this.controls();
-//		_this.control();
+//		_this.controls();
+		_this.control();
 		animate();		
 	}
+	_this.removeYanhua = function(){
+		console.log(__room)
+		__room.remove()
+	}
 	_this.launch = function(){
+//		botany = new Demo.Botany(Demo.Preload.getResult("img"));
+//		__scene.add(botany)
+		
+		
 //		for(var i = 30 ; i > 0 ; i --){
 //			__scene.add(setPos(i--,true,20));
 //			__scene.add(setPos(i,false,20));
 //		}
 		var i = 300;
 		var t = setInterval(function(){
-			var geometry = new THREE.SphereGeometry( 1, 30, 30 );
+			var geometry = new THREE.SphereGeometry( 5, 30, 30 );
 			var material = new THREE.MeshBasicMaterial( {color: 0xffffff} );
 			var sphere = new THREE.Mesh( geometry, material );
 			sphere.name = sphere.id = "g"+i;
-        	sphere.position.z= -100;
+			
+			_objects.push(sphere);
+        	sphere.position.x= -500;
         	
-        	var radian = i*10//THREE.Math.degToRad(i*3);
+        	var radian = i*25//THREE.Math.degToRad(i*3);
         	var radian1 = THREE.Math.degToRad(i);
-        	var r = 100;
-        	console.log(radian);
+        	var r = 500;
+//      	console.log(radian);
         	new TWEEN.Tween(sphere.position)
         		.to({
 //      			x:100*Math.sin(radian),
@@ -170,6 +190,8 @@ Demo.main = function(canvas){
 	}
 	_this.controls = function(){
 		_mouseControls = new THREE.TrackballControls(__camera);
+		__renderer.domElement.addEventListener( 'click', onClick, false );
+		__renderer.domElement.addEventListener( 'touchstart', onTouchStart, false );
 	}
 	/**
 	 * 控制
@@ -195,8 +217,25 @@ Demo.main = function(canvas){
 		e.preventDefault();
 		hitTest( e.touches[0].clientX, e.touches[0].clientY );
 	}
-	function hitTest(){
-		
+	function hitTest(x,y){
+		var mouse = {};
+		mouse.x = ( x / WIDTH ) * 2 - 1;
+		mouse.y = - ( y / HEIGHT ) * 2 + 1;
+		_raycaster.setFromCamera( mouse, __camera );
+		var intersects = _raycaster.intersectObjects( _objects );
+		if ( intersects.length > 0 ) {
+			var obj = intersects[ 0 ].object;
+			console.log(obj,obj.id,obj.position);
+			var pos= obj.position;
+//			yanhua(pos)
+			var botany = new Demo.Botany();
+			botany.position.x = pos.x
+			botany.position.y = pos.y
+			botany.position.z = pos.z
+			var middle = new THREE.Vector3( 0, 0, 0 );
+			botany.lookAt(middle);
+			__scene.add(botany);
+		}
 	}
 	function lightInit(){
 		dirLight = new THREE.DirectionalLight(0xfecd80,0.7);
@@ -216,8 +255,49 @@ Demo.main = function(canvas){
 }
 Object.assign( Demo.main.prototype, THREE.EventDispatcher.prototype);
 Demo.main.prototype.constructor = Demo.main;
+//Demo.main.prototype = createjs.extend(Demo.main, createjs.Stage);
+//Demo.main = createjs.promote(Demo.main, "Stage");
 
 
+/**
+ * 添加药材
+ */
+Demo.Botany = function(pos){
+	var _this = this;
+	var _scale = 0.12;
+	var _radius = 20;
+	var __entity = null,
+		__tip = null;
+	var _isError = false,
+		_enable = true;
+	_this.init = function(pos){
+		THREE.Object3D.call(_this);
+		var i = 1;
+		var texture = new THREE.Texture(Demo.Preload.getResult("y"+i));
+		texture.needsUpdate = true;
+		var geometry = new THREE.PlaneGeometry(64,64);
+		var material = new THREE.MeshBasicMaterial({map: texture, side: THREE.DoubleSide, transparent: true});
+		__entity = new THREE.Mesh(geometry, material);
+		_this.add(__entity);
+		
+		var tr = setInterval(function(){
+			i++
+			var t = new THREE.Texture(Demo.Preload.getResult("y"+i));
+			t.needsUpdate = true;
+			var m = new THREE.MeshPhongMaterial({map:t, side: THREE.DoubleSide, transparent: true});
+			__entity.material = m;
+			if(i>=64){
+				console.log(i);
+				clearInterval(tr);
+				_this.remove(__entity)
+//				removeYanhua();
+			}
+		},10)
+	}
+	_this.init(pos);
+}
+Demo.Botany.prototype = Object.create( THREE.Object3D.prototype );
+Demo.Botany.prototype.constructor = Demo.Botany;
 
 /**
  * 全景
