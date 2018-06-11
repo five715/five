@@ -37,10 +37,10 @@ Particle.main = function(canvas){
 		__camera.position.z = 1;
 		
 		__scene = new THREE.Scene();
-//		__scene.background = new THREE.Color("rgba(0,0,0,0)");
+		__scene.background = new THREE.Color(0x000040);
 		
 		__renderer = new THREE.WebGLRenderer({
-			alpha:true
+//			alpha:true
 		});
 		__renderer.setPixelRatio(window.devicePixelRatio);
 		__renderer.setSize(WIDTH,HEIGHT);
@@ -52,21 +52,20 @@ Particle.main = function(canvas){
 		}
 		
 		animate();
-		_this.launch();
 		_this.controls();
+		__renderer.domElement.addEventListener("click",onClick,false)
+		__renderer.domElement.addEventListener("touchstart",onTouchStart,false)
 	}
 	_this.launch = function(){
-		for ( var i = 0; i < 300; i++ ) {
-			var material = new THREE.SpriteMaterial( {
+		var material = new THREE.SpriteMaterial( {
 			map:new THREE.CanvasTexture(generateSprite()),
-				blending:THREE.AdditiveBlending
-			} );
+			blending:THREE.AdditiveBlending
+		} );
+		for ( var i = 0; i < 300; i++ ) {
 			particle = new THREE.Sprite( material );
 			__scene.add(particle)
 			initParticle(particle,i*10)
 		}
-		__renderer.domElement.addEventListener("click",onClick,false)
-		__renderer.domElement.addEventListener("touchstart",onTouchStart,false)
 		_this.initParticle();
 	}
 	/**
@@ -147,13 +146,31 @@ Particle.main = function(canvas){
 		new TWEEN.Tween(particle.position)
 			.delay(delay)
 			.to({
-				x : Math.random() * 1000 - 500,
-				y : Math.random() * 500 - 250,
-				z : Math.random() * 1000 - 500
+				x : Math.random() * 800 - 400,
+				y : Math.random() * 400 - 200,
+				z : Math.random() * 800 - 400
 			},3000)
 			.onComplete(function(){
 				_objects.push(particle);
+				ainmatePar(particle);
 			})
+			.start();
+		
+	}
+	function ainmatePar(particle){
+		var scope = 50;
+		var pos = particle.position;
+		var t = new TWEEN.Tween(particle.position)
+			.to({
+				x : Math.random() > 0.5 ? pos.x + Math.random()*scope: pos.x - Math.random()*scope,
+				y : Math.random() > 0.5 ? pos.y + Math.random()*scope: pos.y - Math.random()*scope,
+				z : Math.random() > 0.5 ? pos.z + Math.random()*scope: pos.z - Math.random()*scope
+			},2000)
+//			.yoyo(true)
+			.onComplete(function(){
+				ainmatePar(particle)
+			})
+//			.repeat(1)
 			.start();
 	}
 	function generateSprite(){

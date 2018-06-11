@@ -29,21 +29,22 @@
 	var _game = null;
 	$(function(){
 		_game = new Particle.main();
-		new VConsole()
-		var ARLib = window.$ARLib || {};
-		var cameraFacing = 1;
-		var isIOS = ARLib.isIOS();
-		var isAndroid = ARLib.isAndroid();
-		ARLib.openCamera(cameraFacing, function(ret) {
-			console.log(ret)
-			if (ret) {
-				if (isIOS) {
-				}
-				if (isAndroid) {
-					document.getElementById('ar-video').style.display = '';
-				}
-			}
-		});
+		_game.launch();
+//		new VConsole()
+//		var ARLib = window.$ARLib || {};
+//		var cameraFacing = 1;
+//		var isIOS = ARLib.isIOS();
+//		var isAndroid = ARLib.isAndroid();
+//		ARLib.openCamera(cameraFacing, function(ret) {
+//			console.log(ret)
+//			if (ret) {
+//				if (isIOS) {
+//				}
+//				if (isAndroid) {
+//					document.getElementById('ar-video').style.display = '';
+//				}
+//			}
+//		});
 	})
 </script>
 </html>
