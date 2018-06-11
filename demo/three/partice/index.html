@@ -1,0 +1,49 @@
+<html>
+<head>
+<title>three粒子系统</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+<script src="js/libs/jquery-3.2.1.min.js"></script>
+<script src="js/libs/three.min.js"></script>
+<script src="js/libs/Projector.js"></script>
+<!--<script src="js/libs/CanvasRenderer.js"></script>-->
+<script src="js/libs/TrackballControls.js"></script>
+<script src="js/libs/GPUParticleSystem.js"></script>
+<script src="js/libs/dat.gui.min.js"></script>
+<script src="js/libs/stats.min.js"></script>
+<script src="js/libs/tween.min.js"></script>
+<script src="js/partice.class.js"></script>
+<script src="//open.mobile.qq.com/sdk/qqapi.js?_bid=152"></script>
+<script type="text/javascript" src="//res.imtt.qq.com/WebAR/Release/ARLib_v2.0.js"></script>
+<script type="text/javascript" src="js/libs/vconsole.min.js"></script>
+<style type="text/css">
+	*{margin: 0;padding: 0;border: 0;}
+</style>
+</head>
+<body>
+<div id="ar-video" style="display:none">
+	<video id="video" class="video" autoplay=""></video>
+	<canvas id="canvas" style="position:absolute;left:0px;top:0px;"></canvas>
+</div>
+</body>
+<script type="text/javascript">
+	var _game = null;
+	$(function(){
+		_game = new Particle.main();
+		new VConsole()
+		var ARLib = window.$ARLib || {};
+		var cameraFacing = 1;
+		var isIOS = ARLib.isIOS();
+		var isAndroid = ARLib.isAndroid();
+		ARLib.openCamera(cameraFacing, function(ret) {
+			console.log(ret)
+			if (ret) {
+				if (isIOS) {
+				}
+				if (isAndroid) {
+					document.getElementById('ar-video').style.display = '';
+				}
+			}
+		});
+	})
+</script>
+</html>
