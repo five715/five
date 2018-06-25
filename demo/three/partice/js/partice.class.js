@@ -18,14 +18,17 @@ Particle.main = function(canvas){
 		_objects = [];	//检测元素
 	var _mouseControls = null;
 	
-	var _options = null,
+	var _options = null,		//粒子系统
 		_spawnerOptions = null,
 		_tick = 0,
 		_clock = new THREE.Clock(),
 		__particleSystem = null;
 		
-	var __stats = 1,
+	var __stats = 1,			//辅助参数
 		_gui = 1;
+	/**
+	 * 初始化
+	 */
 	_this.init = function(container){
 		container = document.createElement( 'div' );
 		container.style.position = "fixed";
@@ -56,6 +59,9 @@ Particle.main = function(canvas){
 		__renderer.domElement.addEventListener("click",onClick,false)
 		__renderer.domElement.addEventListener("touchstart",onTouchStart,false)
 	}
+	/**
+	 * 开始
+	 */
 	_this.launch = function(){
 		var material = new THREE.SpriteMaterial( {
 			map:new THREE.CanvasTexture(generateSprite()),
@@ -75,7 +81,6 @@ Particle.main = function(canvas){
 		__particleSystem = new THREE.GPUParticleSystem({
 			maxParticles:25000
 		})
-//		__particleSystem.visible = false;
 		__scene.add(__particleSystem);
 		_options = {
 			position : new THREE.Vector3(),
@@ -97,6 +102,9 @@ Particle.main = function(canvas){
 		}
 		if(_gui) _this.Gui();
 	}
+	/**
+	 * 选择参数
+	 */
 	_this.Gui = function(){
 		_gui = new dat.GUI( { width: 350 } ),
 		_gui.add( _options, "velocityRandomness", 0, 3 );
@@ -138,8 +146,15 @@ Particle.main = function(canvas){
 			setTimeout(function(){
 				_spawnerOptions.spawnRate = 0
 			},100)
+			TWEEN.remove(obj.tweenDate)
+			setTimeout(function(){
+				ainmatePar(obj);
+			},1000)
 		}
 	}
+	/**
+	 * 颗粒初始化
+	 */
 	function initParticle(particle,delay){
 		particle.position.set(0,0,-300);
 		particle.scale.x = particle.scale.y = 10;
@@ -157,6 +172,9 @@ Particle.main = function(canvas){
 			.start();
 		
 	}
+	/**
+	 * 颗粒缓动
+	 */
 	function ainmatePar(particle){
 		var scope = 50;
 		var pos = particle.position;
@@ -172,7 +190,11 @@ Particle.main = function(canvas){
 			})
 //			.repeat(1)
 			.start();
+		particle.tweenDate = t;
 	}
+	/**
+	 * 创建颗粒
+	 */
 	function generateSprite(){
 		var canvas = document.createElement("canvas");
 		canvas.width = 16;
@@ -187,16 +209,15 @@ Particle.main = function(canvas){
 		context.fillRect(0,0,canvas.width,canvas.height);
 		return canvas;
 	}
-	function scopeRandom(min,max){
-		var n = Math.reand()
-	}
+	/**
+	 * 鼠标控制
+	 */
 	_this.controls = function(){
 		_mouseControls = new THREE.TrackballControls(__camera,__renderer.domElement );
-//			controls.rotateSpeed = 5.0;
-//			controls.zoomSpeed = 2.2;
-//			controls.panSpeed = 1;
-//			controls.dynamicDampingFactor = 0.3;
 	}
+	/**
+	 * 更新
+	 */
 	function animate(){
 		requestAnimationFrame(animate);
 		if(_mouseControls) _mouseControls.update();
@@ -205,6 +226,9 @@ Particle.main = function(canvas){
 		__renderer.render(__scene,__camera);
 		if(__stats) __stats.update();
 	}
+	/**
+	 * 更新粒子
+	 */
 	function updateParticle(){
 		var delta = _clock.getDelta() * _spawnerOptions.timeScale;
 		_tick+= delta;
