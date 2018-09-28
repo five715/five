@@ -128,10 +128,11 @@
     margin: auto;
     .width(@width_w, @max_W);
 }
-.mainConP(@top_y, @top_w:100%, @max_H : @H){
+.mainConP(@top_y, @width_w:@W, @max_W:@W, @max_H : @H){
     position: absolute;
     .top(@top_y, @max_H);
-    width:@top_w;
+    .width(@width_w, @max_W);
+    .leftContent(@width_w, @max_W);
     text-align: center;
 }
 

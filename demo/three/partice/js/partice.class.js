@@ -23,7 +23,6 @@ Particle.main = function(canvas){
 		_tick = 0,
 		_clock = new THREE.Clock(),
 		__particleSystem = null;
-		
 	var __stats = 1,			//辅助参数
 		_gui = 1;
 	/**
@@ -69,6 +68,7 @@ Particle.main = function(canvas){
 		} );
 		for ( var i = 0; i < 300; i++ ) {
 			particle = new THREE.Sprite( material );
+			particle.clickNumer = 0;
 			__scene.add(particle)
 			initParticle(particle,i*10)
 		}
@@ -109,7 +109,7 @@ Particle.main = function(canvas){
 		_gui = new dat.GUI( { width: 350 } ),
 		_gui.add( _options, "velocityRandomness", 0, 3 );
 		_gui.add( _options, "positionRandomness", 0, 3 );
-		_gui.add( _options, "size", 1, 20 );
+		_gui.add( _options, "size", 1, 200 );
 		_gui.add( _options, "sizeRandomness", 0, 25 );
 		_gui.add( _options, "colorRandomness", 0, 1 );
 		_gui.add( _options, "lifetime", .1, 10 );
@@ -142,12 +142,15 @@ Particle.main = function(canvas){
 			var pos = obj.position
 			_options.position.set(pos.x,pos.y,pos.z)
 			__particleSystem.visible = true
-			_spawnerOptions.spawnRate = 10000
+			_spawnerOptions.spawnRate = 100
 			setTimeout(function(){
 				_spawnerOptions.spawnRate = 0
 			},100)
 			TWEEN.remove(obj.tweenDate)
-			setTimeout(function(){
+			obj.clickNumer++
+			console.log(obj.clickNumer);
+			if(obj.timerPar) clearTimeout(obj.timerPar);
+			obj.timerPar = setTimeout(function(){
 				ainmatePar(obj);
 			},1000)
 		}
@@ -170,7 +173,6 @@ Particle.main = function(canvas){
 				ainmatePar(particle);
 			})
 			.start();
-		
 	}
 	/**
 	 * 颗粒缓动

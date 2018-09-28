@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title></title>
+<script src="js/libs/jquery-3.2.1.min.js"></script>
+<script src="js/libs/three.min.js"></script>
+<script src="js/libs/TrackballControls.js"></script>
+</head>
+<body>
+</body>
+<script type="text/javascript">
+var _game = null;
+$(function(){
+	_game = new Marble.main();
+	_game.ready();
+})
+var Marble = {};
+Marble.VER = "1.0.0";
+Marble.Event = {
+	
+}
+
+var pinsFormation = [];
+var pins = [ 6 ];
+pinsFormation.push( pins );
+pins = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
+pinsFormation.push( pins );
+pins = [ 0 ];
+pinsFormation.push( pins );
+pins = []; // cut the rope ;)
+pinsFormation.push( pins );
+pins = [ 0, cloth.w ]; // classic 2 pins
+pinsFormation.push( pins );
+pins = pinsFormation[ 1 ];
+function togglePins() {
+	pins = pinsFormation[ ~~ ( Math.random() * pinsFormation.length ) ];
+}
+if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+/**
+ * 主体
+ */
+Marble.main = function(canvas){
+	var _this = this;
+	var WIDTH = 0,
+		HEIGHT = 0,
+		RADIUS = 7;
+	var __camera = null,
+		__scene = null,
+		__renderer = null;
+	var CAMERA = {x: 700, y: 50, z: 1900, fov: 23, near: 10, far: 10000000};
+	var _mouseControls = null;
+	var lightPosition4D = new THREE.Vector4(),
+		cubeShadow = {},
+		groundPlane = new THREE.Plane(new THREE.Vector3( 0, 1, 0 ),1.01)
+	var _light = null;
+	var _light1 = new THREE.SpotLight( 0xffffff, 1, 0, Math.PI / 2 );
+	
+	var normalVector = new THREE.Vector3( 0, 1, 0 );
+	var planeConstant = 0.01; // this value must be slightly higher than the groundMesh's y position of 0.0
+	var groundPlane = new THREE.Plane( normalVector, planeConstant );
+	var lightPosition4D = new THREE.Vector4();
+	var _group = null;
+	var SHADOW_MAP_WIDTH = 2048, 
+		SHADOW_MAP_HEIGHT = 1024;
+	
+	/**
+	 * 初始化
+	 */
+	_this.init = function(container){
+		container = document.createElement( 'div' );
+		container.style.position = "fixed";
+		container.style.top = 0
+		document.body.appendChild( container );
+		WIDTH = window.innerWidth;
+		HEIGHT = window.innerHeight;
+		
+		__camera = new THREE.PerspectiveCamera(CAMERA.fov,WIDTH/HEIGHT,CAMERA.near,CAMERA.far)
+		__camera.position.x = CAMERA.x;
+		__camera.position.y = CAMERA.y;
+		__camera.position.z = CAMERA.z;
+		
+		__scene = new THREE.Scene();
+		__scene.background = new THREE.Color(0x59472b);
+		
+		
+		__renderer = new THREE.WebGLRenderer({
+			antialias:true
+		});
+		__renderer.setPixelRatio(window.devicePixelRatio);
+		__renderer.setSize(WIDTH,HEIGHT);
+		container.appendChild( __renderer.domElement );
+		__renderer.autoClear = false;
+		__renderer.shadowMap.enabled = true;
+		__renderer.shadowMap.type = THREE.PCFShadowMap;
+		
+		_light = new THREE.SpotLight( 0xffffff, 1, 0, Math.PI / 2 );
+		_light.position.set(0,550,600);
+//		_light.target.position.set(50,0,500);
+		_light.castShadow = true;
+		_light.shadow = new THREE.LightShadow(new THREE.PerspectiveCamera(50,1,200,2500));
+		_light.shadow.bias = 0.0001;
+		_light.shadow.mapSize.width = SHADOW_MAP_WIDTH;
+		_light.shadow.mapSize.height = SHADOW_MAP_HEIGHT;
+//		
+//		_light = new THREE.PointLight( 0x00ff00, 1, 0);
+//		_light.castShadow = true;
+//		var pointLightHelper = new THREE.PointLightHelper( _light, 1 );
+		
+		__scene.add(new THREE.CameraHelper(_light.shadow.camera))
+		__scene.add(_light);
+		_light1 = new THREE.PointLight( 0xffffee, 1, 0);
+		_light1.power = 5000;
+		_light1.position.set(30,520,150)
+		_light1.castShadow = true;
+		var pointLightHelper = new THREE.PointLightHelper( _light1, 1 );
+		
+		__scene.add(new THREE.CameraHelper(_light1.shadow.camera))
+		__scene.add(_light1,pointLightHelper);
+		
+//		
+//		__scene.add(new THREE.CameraHelper(_light.shadow.camera))
+//
+//		__scene.add(_light);
+		_this.controls();
+	}
+	/**
+	 * 预备
+	 */
+	_this.ready = function(){
+		var geometry = new THREE.PlaneBufferGeometry(100,100);
+		var planeMaterial = new THREE.MeshPhongMaterial({color:0xffdd99,side: THREE.DoubleSide });
+		var ground = new THREE.Mesh(geometry,planeMaterial);
+		ground.position.set(0,-50,0);
+		ground.rotation.x = -Math.PI/2;
+		ground.scale.set(100,100,100);
+		ground.castShadow = true;
+		ground.receiveShadow = true;
+		
+		var mesh = new THREE.Mesh(new THREE.BoxBufferGeometry(1500,220,150),planeMaterial);
+		mesh.position.y = -300;
+		mesh.position.z = 20;
+		mesh.castShadow = true;
+		mesh.receiveShadow = true;
+		
+		
+//		var geometry = new THREE.CylinderGeometry( width, width, _height, SEGMNTATION , 1, true,_start+1.57,_length);
+//		var material = new THREE.MeshBasicMaterial( {
+//			color: _color,
+//			side: THREE.DoubleSide 
+//		} );
+//		var side = new THREE.Mesh( geometry, material );
+		
+		var mesh1 = new THREE.Mesh( new THREE.CylinderGeometry( 50, 50, 150,30,1,true,), planeMaterial );
+//		mesh1.position.y = -300;
+//		mesh1.position.z = 20;
+		mesh1.castShadow = true;
+		mesh1.receiveShadow = true;
+		
+		
+//		var geometry = new THREE.RingBufferGeometry( RADIUS, _width, SEGMNTATION ,1,_start,_length);
+		
+		
+		
+		var mesh2 = new THREE.Mesh( new THREE.RingBufferGeometry( 200, 100, 1,1,0,Math.PI*1 ), planeMaterial );
+//		mesh2.position.y = -300;
+//		mesh2.position.z = 20;
+		mesh2.castShadow = true;
+		mesh2.receiveShadow = true; 
+		
+		
+		
+		var mesh3 = new THREE.Mesh( new THREE.BoxBufferGeometry( 200, 100, 0.01), planeMaterial );
+		mesh3.rotation.y = Math.PI;
+		mesh3.position.z = 100;
+		mesh3.castShadow = true;
+		mesh3.receiveShadow = true;
+		
+		var barrier = new Marble.Barrier(5,1)
+		barrier.position.x = 0
+		barrier.position.z = 50
+		__scene.add(ground,mesh1,barrier);
+		animate();
+	}
+	/**
+	 * 鼠标控制
+	 */
+	_this.controls = function(){
+		_mouseControls = new THREE.TrackballControls(__camera,__renderer.domElement );
+	}
+	/**
+	 * 更新
+	 */
+	function animate(){
+		requestAnimationFrame(animate);
+		if(_mouseControls) _mouseControls.update();
+		__renderer.clear();
+		__renderer.render(__scene,__camera);
+	}
+	_this.init(canvas);
+}
+Object.assign(Marble.main.prototype,THREE.EventDispatcher.prototype);
+Marble.main.prototype.constructor = Marble.main;
+
+
+/**
+ * 障碍物
+ */
+Marble.Barrier = function(radius,number,tier){
+	var _this = this;
+	var _angle = 0;
+	var _height = 3,			//楼层高度
+		HEIGHT = 30,
+		_width = 15,			//外圆半径
+		WIDTH = 55,
+		SEGMNTATION = 50,	//横截面
+		RADIUS = radius,	//圆柱半径
+		_start = 0,			//开始位置
+		_length = Math.PI * (Math.random()*0.5+1.3),	//长度
+		_color = 0x333333,	//颜色
+		COLOR = {
+			floor : 0x333333,//颜色-默认
+			die : 0xffff00,	//颜色-死亡
+			vanish : 0xffffff//颜色-消失
+		},
+		_number = number,	//每层数量
+		_i = tier;			//当前第几层
+	var GAP = {				//缺口
+			min : 0.35,
+			max : 0.35
+		},
+		DIE = {
+			min : 0.2,
+			max : 0.3
+		}
+	_this.init = function(){
+		THREE.Object3D.call(_this);
+		for(var i = 0 ; i < _number ; i++){
+			countLength()
+			var mesgIn = MeshInTheMesh(i,(_i?Math.random():0))
+			mesgIn.rotation.y = Math.PI*2/_number*i
+			_this.add(mesgIn)
+		}
+	}
+	/**
+	 * 计算楼层长度
+	 */
+	function countLength(){
+		_length = Math.PI * (Math.random()*(GAP.max-GAP.min)+(2/_number-GAP.max))
+	}
+	/**
+	 * 获取楼层块
+	 */
+	_this.getMesgIn = function(bol){
+		var obj = [];
+		_this.children.forEach(mesgIn=>{
+			mesgIn.children.forEach(mesg=>{
+//				if(mesg.name.indexOf("phase") !== -1 ){
+					if(bol) {
+						obj.push(mesg)
+					}else{
+						var r = mesg.rotation.clone();
+						r.y += mesgIn.rotation.clone().y;
+						r.length = mesg.length
+						r.name = mesg.name
+						obj.push(r)
+					}
+//				}
+			})
+		})
+		return obj;
+	}
+	/**
+	 * 设置颜色
+	 */
+	_this.setColor = function(){
+		var obj = _this.getMesgIn(true);
+		var material = new THREE.MeshBasicMaterial( {
+			color: COLOR.vanish, 
+			side: THREE.DoubleSide
+		} );
+		obj.forEach(o=>{
+			o.children.forEach(p=>{
+				p.material = material
+			})
+		})
+	}
+	/**
+	 * 块中块
+	 * @param {Object} 生成的第几个
+	 * @param {Object} 
+	 */
+	function MeshInTheMesh(i,dom){
+		var l = _length;
+		var mesgIn = new THREE.Object3D();
+		var dom1 = 0.4,	
+			dom2 = 0.9;
+		if(dom > dom1){
+			if(dom > dom2){
+				//第二段
+				_length -= Math.PI*(DIE.max-DIE.min)+DIE.min;
+			}else{
+				//第三段
+				_length -= Math.PI*(DIE.max-DIE.min)+DIE.min;
+				_length = Math.random()*_length;
+			}
+		}
+		//添加楼层块
+		_color = COLOR.floor;
+		_height =  HEIGHT
+		_width = WIDTH
+		var obj = addMesh(i);
+		mesgIn.add(obj)
+		if(dom>dom1){
+			//生成死亡块
+			_color = COLOR.die;
+			var h = 0.5;
+			_height =  HEIGHT+h;
+			_width = WIDTH+0.1;
+			var rotate = _length;
+			var obj1 = addMesh(i,Math.PI*DIE.min);
+			obj1.position.y += h/2
+			obj1.rotation.y = rotate
+			mesgIn.add(obj1)
+		}
+		if(dom>dom1 && dom < dom2){
+			//补充死亡块之后的楼层块
+			_color = COLOR.floor;
+			_height =  HEIGHT
+			_width = WIDTH
+			var length = rotate + Math.PI*DIE.min
+			_length = l - length;
+			if(_length>0.05){
+				var obj2 = addMesh(i);
+				obj2.rotation.y = length
+				mesgIn.add(obj2)
+			}
+		}
+		return mesgIn;
+	}
+	/**
+	 * 楼层块
+	 */
+	function addMesh(i,length){
+		if(length) _length = length;
+		var obj = new THREE.Object3D();
+		var barrier = addFace()
+		var barrier1 = addFace()
+		barrier1.position.y = -_height
+		var side = addSide(_width)
+		var side1 = addSide(RADIUS)
+		var plane = addPlane();
+		plane.position.x = (_width-RADIUS)/2+RADIUS;
+		var plane1 = addPlane();
+		plane1.rotation.y = _length
+		_this.revolution(plane1,0,0,(_width-RADIUS)/2+RADIUS)
+		obj.add(barrier,barrier1,side,side1,plane,plane1)
+//		obj.add(plane,plane1)
+		obj.name = length?"die"+i:"phase"+i
+		obj.length = _length;
+//		obj.castShadow = true;
+//		obj.receiveShadow = true;
+		return obj
+	}
+	/**
+	 * 旋转位置
+	 */
+    _this.revolution = function(obj,x0,y0, r){		//圆心x 圆心y 半径r 角度a0
+        obj.position.x = x0 + r*(Math.sin(_length + Math.PI*0.5));
+        obj.position.z = y0 + r*(Math.cos(_length + Math.PI*0.5));
+    };
+	/**
+	 * 添加面-左右
+	 */
+	function addPlane(){
+		var geometry = new THREE.BoxBufferGeometry( _width-RADIUS,_height, 0.01 );
+		var material = new THREE.MeshBasicMaterial( {
+			color: 0x331155, 
+			side: THREE.DoubleSide
+		} );
+		var plane = new THREE.Mesh( geometry, material );
+		plane.rotation.y = Math.PI
+		plane.position.y = -_height/2
+		plane.castShadow = true;
+		plane.receiveShadow = true;
+		return plane
+	}
+	/**
+	 * 添加面-前后
+	 */
+	function addSide(width){
+		var geometry = new THREE.CylinderGeometry( width, width, _height, SEGMNTATION , 1, true,_start+1.57,_length);
+		var material = new THREE.MeshBasicMaterial( {
+			color: _color,
+			side: THREE.DoubleSide 
+		} );
+		var side = new THREE.Mesh( geometry, material );
+		side.position.y = -_height/2
+		side.castShadow = true;
+		side.receiveShadow = true;
+		return side;
+	}
+	/**
+	 * 添加面-上下
+	 */
+	function addFace(){
+		var geometry = new THREE.RingBufferGeometry( _width,RADIUS , SEGMNTATION ,1,_start,_length);
+		var material = new THREE.MeshBasicMaterial( { 
+			color: _color,
+			side: THREE.DoubleSide 
+		} );
+		var mesh = new THREE.Mesh( geometry, material );
+		mesh.rotation.x = -Math.PI/2
+		mesh.name = "geometry"
+		mesh.castShadow = true;
+		mesh.receiveShadow = true;
+		return mesh;
+	}
+	_this.init();
+}
+Marble.Barrier.prototype = Object.create( THREE.Object3D.prototype );
+Marble.Barrier.prototype.constructor = Marble.Barrier;
+
+	
+</script>
+</html>

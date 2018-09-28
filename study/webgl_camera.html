@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title></title>
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+<link rel="stylesheet" type="text/css" href="css/style.css"/>
+<script src="js/libs/jquery-3.2.1.min.js"></script>
+<script src="js/libs/three.js"></script>
+<script src="js/libs/TrackballControls.js"></script>
+<script src="js/libs/stats.min.js"></script>
+</head>
+<body>
+</body>
+<script type="text/javascript">
+	var _game = null;
+	$(function(){
+		_game = new Three.main();
+		_game.controls();
+	})
+	var Three = {};
+	Three.main = function(){
+		var _this = this;
+		var CAMERA = {
+			fov:50,
+			near:1,
+			far : 10000,
+			x:0,
+			y:0,
+			z:2500
+		}
+		var SCREEN = {
+			width : window.innerWidth,
+			height : window.innerHeight
+		}
+		var aspect = SCREEN.width/SCREEN.height;
+		var __camera = null,
+			__cameraRig = null,
+			__scene = null,
+			__renderer = null,
+			__activeCamera = null;
+		var _mouseControls = null;
+		var __mesh = null;
+		_this.init = function(){
+			container = document.createElement("div");
+			document.body.appendChild(container);
+			
+			__scene = new THREE.Scene();
+			
+			__camera = new THREE.PerspectiveCamera(CAMERA.fov,0.5*aspect,CAMERA.near,CAMERA.far)
+			__camera.position.x = CAMERA.x;
+			__camera.position.y = CAMERA.y;
+			__camera.position.z = CAMERA.z;
+			
+			var cameraPerspective = new THREE.PerspectiveCamera(50,0.5*aspect,150,1000)
+			var frustumSize = 600;
+			var cameraOrtho = new THREE.OrthographicCamera(0.5*frustumSize*aspect/-2,0.5*frustumSize*aspect/2,frustumSize/2,frustumSize/-2,150,1000);
+			__scene.add(new THREE.CameraHelper(cameraPerspective));
+//			__scene.add(new THREE.CameraHelper(cameraOrtho));
+			
+			cameraPerspective.rotation.y = cameraOrtho.rotation.y = Math.PI;
+			
+			__cameraRig = new THREE.Group();
+			__cameraRig.add(cameraPerspective,cameraOrtho);
+			__scene.add(__cameraRig)
+			
+			__activeCamera = cameraPerspective;
+			
+			__renderer = new THREE.WebGLRenderer({antialias:true});
+			__renderer.setPixelRatio(window.devicePixelRatio);
+			__renderer.setSize(SCREEN.width,SCREEN.height);
+			__renderer.domElement.style.position = "relative";
+			container.appendChild(__renderer.domElement);
+			__renderer.autoClear = false;
+			
+			__mesh = new THREE.Mesh(
+				new THREE.SphereBufferGeometry(100,16,8),
+				new THREE.MeshBasicMaterial({color:0xffffff,wireframe:true})
+			)
+			var mesh2 = new THREE.Mesh(
+				new THREE.SphereBufferGeometry( 50, 16, 8 ),
+				new THREE.MeshBasicMaterial( { color: 0x00ff00, wireframe: true } )
+			);
+			var mesh3 = new THREE.Mesh(
+				new THREE.SphereBufferGeometry( 5, 16, 8 ),
+				new THREE.MeshBasicMaterial( { color: 0x0000ff, wireframe: true } )
+			);
+			mesh3.position.z = 150;
+			mesh2.position.y = 150;
+			__scene.add(__mesh,mesh2);
+			__mesh.add(mesh2)
+			__cameraRig.add(mesh3)
+			
+			
+			animate()
+		}
+		_this.controls = function(){
+			_mouseControls = new THREE.TrackballControls(__camera,__renderer.domElement );
+		}
+		function animate(){
+			requestAnimationFrame(animate);
+			if(_mouseControls) _mouseControls.update();
+			render();
+		}
+		function render(){
+			var r = Date.now() * 0.0005;
+
+			__mesh.position.x = 700 * Math.cos( r );
+			__mesh.position.z = 700 * Math.sin( r );
+			__mesh.position.y = 700 * Math.sin( r );
+
+			__mesh.children[ 0 ].position.x = 70 * Math.cos( 2 * r );
+			__mesh.children[ 0 ].position.z = 70 * Math.sin( r );
+				
+			__cameraRig.lookAt( __mesh.position );
+			
+			__renderer.clear();
+			__renderer.setViewport(0,0,SCREEN.width/2,SCREEN.height);
+			__renderer.render(__scene,__activeCamera)
+			
+			__renderer.setViewport(SCREEN.width/2,0,SCREEN.width/2,SCREEN.height);
+			__renderer.render(__scene,__camera)
+		}
+		
+		_this.init();
+	}
+	
+</script>
+</html>

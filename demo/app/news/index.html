@@ -1,0 +1,75 @@
+
+<!DOCTYPE html>
+<html>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<meta content="no-cache" http-equiv="Cache-Control" />
+<meta content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" name="viewport" />
+<meta content="telephone=no" name="format-detection" />
+<link type="image/x-icon" rel="shortcut icon" href="http://appmedia.qq.com/media/h5e/h5e-icon.png" />
+<head>腾讯新闻APP测试入口</head>
+<body>
+<script src="http://appmedia.qq.com/media/h5e/jquery.min.js"></script>
+<script src="//appmedia.qq.com/media/631007208/appin/h5e.2.0.6.js" id='h5e-node' arg='{"tamsid":"641012852", "appid":"",  "env": "pro", "debug": false, "track": true }'></script>
+<script>
+function goToApp(url) {
+	var ua = h5e.util.ua();
+	var furl = '';
+	var schema = '';
+	function wxGoToVideoAPP() {
+		try {
+			furl = url;
+			if((furl.substring(0, 7) != 'http://') && (furl.substring(0, 8) != 'https://')) {
+				document.write('非法链接');
+			} else {
+				if(ua.ios) {
+					schema = 'qqnews://tadshowlandingview?linkurl=' + furl;
+				} else if(ua.android) {
+					schema = 'qqnews://article_9500?linkurl=' + furl;
+				}
+				if(schema != '') {
+					WeixinJSBridge.invoke("launchApplication", {
+						"schemeUrl": schema
+					}, function(res) {
+
+					});
+				} else {
+					document.write('暂不支持此操作系统');
+				}
+			}
+		} catch(e) {
+			document.write('非法链接');
+		}
+	}
+	try {
+		furl = url;
+		if((furl.substring(0, 7) != 'http://') && (furl.substring(0, 8) != 'https://')) {
+			document.write('非法链接');
+		} else {
+			if(ua.MicroMessenger) {
+				if(typeof WeixinJSBridge == "object" && typeof WeixinJSBridge.invoke == "function") {
+					wxGoToVideoAPP();
+				} else {
+					if(document.addEventListener) {
+						document.addEventListener("WeixinJSBridgeReady", wxGoToVideoAPP, false);
+					} else if(document.attachEvent) {
+						document.attachEvent("WeixinJSBridgeReady", wxGoToVideoAPP);
+						document.attachEvent("onWeixinJSBridgeReady", wxGoToVideoAPP);
+					}
+				}
+			} else {
+				if(ua.ios) {
+					document.location = 'qqnews://tadshowlandingview?linkurl=' + furl;
+				} else if(ua.android) {
+					document.location = 'qqnews://article_9500?linkurl=' + furl;
+				} else {
+					document.write('暂不支持此操作系统');
+				}
+			}
+		}
+	} catch(e) {
+		document.write('非法链接');
+	}
+}
+goToApp("http://www.baidu.com")
+</script>
+</body></html>
