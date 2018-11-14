@@ -56,7 +56,7 @@ module.exports = {
 						loader: 'file-loader',
 						options: {
 							regExp: /(\w+)[\/|\\](\w+)\.(png|jpg|gif)/i,
-							//name: 'images/[1]-[name].[ext]'
+							//.name: 'images/[1]-[name].[ext]'
 							name(file){
 								return '[path]/[name].[ext]';
 							}
@@ -67,14 +67,14 @@ module.exports = {
 						options: {
 							mozjpeg: {
 								progressive: true,
-								quality: 65
+								quality: 80
 							},
 							// optipng.enabled: false will disable optipng
 							optipng: {
 								enabled: false,
 							},
 							pngquant: {
-								quality: '65-90',
+								quality: '80-90',
 								speed: 4
 							},
 							gifsicle: {

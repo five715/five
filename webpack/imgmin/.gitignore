@@ -1,1 +1,6 @@
 /dist/
+/src/images/
+/src/res/
+*.jpg
+*.png
+/node_modules/
