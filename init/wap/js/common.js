@@ -8,13 +8,39 @@ $(function(){
 			$("html").css("font-size",size+"px");
 		}
 	})
-	linkage(config)
-	$("#fullpage").fullpage({
-		'css3' : false,
-		verticalCentered : !1,
-		anchors:["1","2","3","4","5","6"]
+//	$("#fullpage").fullpage({
+//		'css3' : false,
+//		verticalCentered : !1,
+//		anchors:["1","2","3","4","5","6"]
+//	})
+//	Dream.Preload.load(progress, complete);
+/*--------------------------视频---------------------------*/
+	//播放
+	$(".video .player .play").on("click",function(){
+		funcPlayer("i0712l5fveu")
+		$(this).hide();
 	})
-	Dream.Preload.load(progress, complete);
+	$(".video .player .play").click();
+/*--------------------------预约试驾---------------------------*/
+	//省市联动信息
+//	linkage(config);
+//	linkageType(data_type);
+	//选择框-省份
+	funcSelectChange($("#pro"),"city","dealer");
+	//选择框-城市
+	funcSelectChange($("#city"),"dealer");
+	//选择框-经销商
+	funcSelectChange($("#dealer"));
+	//选择框-性别
+	funcSelectChange($("#sex"));
+	//选择框-车型
+	funcSelectChange($("#type"));
+	//声明选择框
+	$(".testDrive .treaty").on("click",function(){
+		$(this).toggleClass("active")
+	})
+	//提交
+	$(".testDrive .submit").on("click",verify);
 })
 /**
  * 加载中
@@ -94,10 +120,10 @@ function popup(n){
 }
 
 //轮播图
-function funcSlick(obj,number,prev,next){
+function funcSlick(obj,dot,number,prev,next){
 	obj.attr("data-slick","yes");
 	obj.slick({
-        dots: false,
+        dots: dot?true:false,
         infinite: true,
         arrows: true,
         draggable: false,
@@ -127,17 +153,27 @@ function funcPlayer(vid){
         }
 	});
 }
+
+//视频-v3
+function funcPlayer(vid){
+	var player = new Txplayer({
+		containerId: 'player',
+		vid: vid,
+		width: '100%',
+		height: '100%',
+		autoplay: false
+	});
+}
 /*---------------------------验证------------------------------*/
 function verify(){
 	var _this = $(".popup_info")
 	//姓名 
 	var name = _this.find(".name input").val();
-    if (validName(name)){
-    	if(name=="请输入联系人"){
-            alert("请输入联系人");
-            return false;
-        }
-    }else {
+    if(name=="请输入联系人" || name == ""){
+		alert("请输入联系人");
+		return false;
+    }
+    if (!validName(name)){
         alert("请输入正确的姓名");
         return false;
     }
@@ -220,14 +256,27 @@ function funcSelectChange(obj,obj1,obj2){
 }
 //验证初始化
 function testDriveInit(number){
+	var _this = $(".testDrive")
 	if(!number) number = "all";
-	if(number == "name" || number == "all" ) $(".popup_info .name input").val("");
-	if(number == "phone" || number == "all" ) $(".popup_info .phone input").val("");
-	if(number == "pro" || number == "all" ) $(".popup_info .pro span").text("")
-	if(number == "city" || number == "all" ) $(".popup_info .city span").text("");
-	if(number == "dealer" || number == "all" ) $(".popup_info .dealer span").text("");
+	if(number == "name" || number == "all" ) _this.find(".name input").val("");
+	if(number == "phone" || number == "all" ) _this.find(".phone input").val("");
+	if(number == "pro" || number == "all" ) _this.find(".pro span").text("")
+	if(number == "city" || number == "all" ) _this.find(".city span").text("");
+	if(number == "type" || number == "all" ) _this.find(".type span").text("");
+	if(number == "dealer" || number == "all" ) _this.find(".dealer span").text("");
 	if(number == "config" || number == "all" ) {
-		$(".testDrive .selectInit").empty();
-		linkage(config)
+		_this.find(".selectInit").empty();
+		linkage(config);
 	}
+}
+
+/**
+ * 替换系统弹窗
+ * @param {Object} text
+ */
+function alert(text){
+	Vogsojs.alert(text);
+	setTimeout(function(){
+		$(window).one("click",function(){$(".maskAlert .alertSure").click()})
+	},100)
 }

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+ 
+	<head>
+		<meta charset="UTF-8">
+		<title>three.js</title>
+	</head>
+ 
+	<body>
+		<script type="text/javascript" src="js/three.js"></script>
+		<script type="text/javascript" src="js/Physijs/physi.js"></script>
+		<script src="js/Detector.js"></script>
+		<script type="text/javascript" src="js/dat.gui.min.js"></script>
+		<script type="text/javascript" src="js/stats.min.js"></script>
+		<script type="text/javascript" src="js/OBJLoader.js"></script>
+		<script type="text/javascript" src="js/MTLLoader.js"></script>
+		<script type="text/javascript" src="js/OBJMTLLoader.js"></script>
+ 
+		<script>
+			'use strict';
+			Physijs.scripts.worker = 'js/Physijs/physijs_worker.js';
+			Physijs.scripts.ammo = 'ammo.js';
+ 
+			if (!Detector.webgl) Detector.addGetWebGLMessage();
+			var renderer, scene, camera, light;
+			var geometry, material, mesh, model;
+			var stats = initStats();
+ 
+			function init() {
+				renderer = new THREE.WebGLRenderer({
+					antialias: true
+				});
+				renderer.setClearColor(0x000000);
+				renderer.setSize(window.innerWidth, window.innerHeight);
+				renderer.shadowMapEnabled = true;
+ 
+				scene = new THREE.Scene();
+ 
+				camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+				camera.lookAt(new THREE.Vector3(-10, 0, -10));
+				camera.position.set(150, 30, 150);
+ 
+				light = new THREE.SpotLight(0xffffff);
+				light.castShadow = true;
+				light.position.set(-100, 100, 100);
+ 
+				scene.add(light);
+ 
+				var onProgress = function(xhr) {
+					if (xhr.lengthComputable) {
+						var percentComplete = xhr.loaded / xhr.total * 100;
+						console.log(Math.round(percentComplete, 2) + '% downloaded');
+					}
+				};
+				var onError = function(xhr) {};
+				var loader = new THREE.OBJMTLLoader();
+				loader.load('obj/three.obj', 'obj/three.mtl', function(object) {
+					model = object;
+					model.rotation.x = Math.PI / 180 * 90;
+ 
+					for (var i = 0; i < model.children.length; i++) {
+						model.children[i].castShadow = true;
+						var ground_material = Physijs.createMaterial(
+							model.children[i].material,
+							1,
+							0
+						);
+						var mesh = new Physijs.ConcaveMesh(
+							model.children[i].geometry,
+							ground_material,
+							0
+						);
+						mesh.rotation.x = Math.PI / 180 * 90;
+						scene.add(mesh);
+					}
+ 
+					scene.add(model);
+ 
+				}, onProgress, onError);
+ 
+				creatGround();
+				document.body.appendChild(renderer.domElement);
+				window.addEventListener('resize', onWindowResize, false);
+				render();
+			}
+ 
+			function onWindowResize() {
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				renderer.setSize(window.innerWidth, window.innerHeight);
+			}
+ 
+			function creatGround() {
+				geometry = new THREE.CubeGeometry(1000, 1, 1000);
+				material = new THREE.MeshBasicMaterial({
+					color: 0xffffff
+				});
+				mesh = new THREE.Mesh(geometry, material);
+				mesh.position.set(0, -10, 0);
+				mesh.receiveShadow = true;
+				scene.add(mesh);
+			}
+ 
+			function initStats() {
+ 
+				var stats = new Stats();
+ 
+				stats.setMode(0); // 0: fps, 1: ms
+ 
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.left = '0px';
+				stats.domElement.style.top = '0px';
+				document.body.appendChild(stats.domElement);
+				return stats;
+			}
+ 
+			var control = new function() {
+				this.cx = 150;
+				this.cy = 30;
+				this.cz = 150;
+				this.redraw = function() {
+					camera.position.set(control.cx, control.cy, control.cz);
+				}
+			}
+ 
+			var gui = new dat.GUI();
+			gui.add(control, 'cx', -300, 300).onChange(control.redraw);
+			gui.add(control, 'cy', -300, 300).onChange(control.redraw);
+			gui.add(control, 'cz', -300, 300).onChange(control.redraw);
+ 
+			var clock = new THREE.Clock();
+ 
+			function render() {
+				var delta = clock.getDelta();
+				stats.update();
+				requestAnimationFrame(render);
+				renderer.render(scene, camera);
+			}
+			init();
+		</script>
+		<style>
+			body {
+				padding: 0;
+				margin: 0;
+				overflow: hidden;
+			}
+		</style>
+	</body>
+ 
+</html>

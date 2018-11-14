@@ -21,22 +21,22 @@ Marble.Event = {
 	
 }
 
-var pinsFormation = [];
-var pins = [ 6 ];
-pinsFormation.push( pins );
-pins = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
-pinsFormation.push( pins );
-pins = [ 0 ];
-pinsFormation.push( pins );
-pins = []; // cut the rope ;)
-pinsFormation.push( pins );
-pins = [ 0, cloth.w ]; // classic 2 pins
-pinsFormation.push( pins );
-pins = pinsFormation[ 1 ];
-function togglePins() {
-	pins = pinsFormation[ ~~ ( Math.random() * pinsFormation.length ) ];
-}
-if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+// var pinsFormation = [];
+// var pins = [ 6 ];
+// pinsFormation.push( pins );
+// pins = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
+// pinsFormation.push( pins );
+// pins = [ 0 ];
+// pinsFormation.push( pins );
+// pins = []; // cut the rope ;)
+// pinsFormation.push( pins );
+// pins = [ 0, cloth.w ]; // classic 2 pins
+// pinsFormation.push( pins );
+// pins = pinsFormation[ 1 ];
+// function togglePins() {
+// 	pins = pinsFormation[ ~~ ( Math.random() * pinsFormation.length ) ];
+// }
+// if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 
 /**
  * 主体
@@ -110,14 +110,14 @@ Marble.main = function(canvas){
 		
 		__scene.add(new THREE.CameraHelper(_light.shadow.camera))
 		__scene.add(_light);
-		_light1 = new THREE.PointLight( 0xffffee, 1, 0);
-		_light1.power = 5000;
-		_light1.position.set(30,520,150)
-		_light1.castShadow = true;
-		var pointLightHelper = new THREE.PointLightHelper( _light1, 1 );
-		
-		__scene.add(new THREE.CameraHelper(_light1.shadow.camera))
-		__scene.add(_light1,pointLightHelper);
+// 		_light1 = new THREE.PointLight( 0xffffee, 1, 0);
+// 		_light1.power = 5000;
+// 		_light1.position.set(30,520,150)
+// 		_light1.castShadow = true;
+// 		var pointLightHelper = new THREE.PointLightHelper( _light1, 1 );
+// 		
+// 		__scene.add(new THREE.CameraHelper(_light1.shadow.camera))
+// 		__scene.add(_light1,pointLightHelper);
 		
 //		
 //		__scene.add(new THREE.CameraHelper(_light.shadow.camera))
@@ -152,8 +152,11 @@ Marble.main = function(canvas){
 //		} );
 //		var side = new THREE.Mesh( geometry, material );
 		
-		var mesh1 = new THREE.Mesh( new THREE.CylinderGeometry( 50, 50, 150,30,1,true,), planeMaterial );
-//		mesh1.position.y = -300;
+		var mesh1 = new THREE.Mesh( 
+		new THREE.BoxGeometry(5,5,5), 
+		planeMaterial 
+		);
+//		mesh1.position.y = -300
 //		mesh1.position.z = 20;
 		mesh1.castShadow = true;
 		mesh1.receiveShadow = true;
@@ -180,7 +183,7 @@ Marble.main = function(canvas){
 		var barrier = new Marble.Barrier(5,1)
 		barrier.position.x = 0
 		barrier.position.z = 50
-		__scene.add(ground,mesh1,barrier);
+		__scene.add(ground,mesh1);
 		animate();
 	}
 	/**

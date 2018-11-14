@@ -1,4 +1,4 @@
-.reset(@bgColor : #fff,@max_width : 640){
+.reset(@bgColor : #fff,@max_width : 750){
     html{font-size:31.25%;font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}
     body,h3,h4,h5,h6,ul,li,ol,div,dl,dt,dd,p,img,a,form{margin:0;padding:0;font-family:"微软雅黑";-webkit-tap-highlight-color:rgba(0,0,0,0);appearance:none;}
     div{width:auto;border: none;outline: none;outline-style: none;}
@@ -38,13 +38,27 @@
 	.lucency .y {opacity: 1;z-index:2;} 
 	.lucency .n {opacity: 0;} 
 }
-.popup(@clarity:0.8){
+.popup(@clarity:0.8,@z:9){
     .pf();
     top: 0;
     width: 100%;
     height: 100%;
     background: rgba(0,0,0,@clarity);
-	z-index:9;
+	z-index:@z;
+}
+.slide3d(@width:@W){
+	.slick_3d {
+	  -webkit-perspective: @width;
+	  perspective: @width;
+	}
+	.slick_3d .item {
+		position: absolute;
+		top: 0;
+	}
+	.slick_3d .container {
+	  -webkit-transform-style: preserve-3d;
+	  transform-style: preserve-3d;
+	}
 }
 .pr(){
     position: relative;
