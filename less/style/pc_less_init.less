@@ -20,6 +20,16 @@
 .resetP(){
     p{text-overflow: ellipsis; width: 100%; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;}
 }
+.resetP(@num:1){
+    text-overflow: ellipsis;
+	overflow: hidden;
+	display: -webkit-box; 
+	-webkit-line-clamp: @num;
+	-webkit-box-orient: vertical;
+	//word-break:keep-all;//IE6
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
 .pr(){
     position: relative;
 }
@@ -48,7 +58,7 @@
     width: @width_w+0px;
 }
 .leftContent(@x, @box_W : @W){    
-    left : ((@box_W - @x) / 2 /@box_W) + 0px;
+    left : (@box_W - @x) / 2 + 0px;
 }
 .main2(@top_y, @left_x) {
     position: absolute;
@@ -81,11 +91,33 @@
 }
 
 .left(@x, @box_W : @W){
-    left: (@x / @box_W) * 100%
+    left: @x + 0px;
 }
 .top(@y, @box_H : @H){
-    top: (@y / @box_H) * 100%
+    top: @y + 0px;
 }
 .width(@w, @box_W : @W){
-    width: (@w / @box_W) * 100%
+    width:@w+0px;
+}
+.height(@h:@H){
+    height: @h+0px;
+}
+.bg(@url,@h:@H){
+    background: url(@url) 50% no-repeat;
+    .height(@H);
+}
+
+.slide3d(@width:@W){
+	.slick_3d {
+	  -webkit-perspective: @width;
+	  perspective: @width;
+	}
+	.slick_3d .item {
+		position: absolute;
+		top: 0;
+	}
+	.slick_3d .container {
+	  -webkit-transform-style: preserve-3d;
+	  transform-style: preserve-3d;
+	}
 }
