@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>五阶贝塞尔</title>
+	</head>
+
+	<body>
+		<canvas id="curve" width="500" height="500" style="border: 1px solid #000000;"></canvas>
+	</body>
+	<script type="text/javascript">
+		function formualFive(t, p0, p1, p2, p3, p4, p5) {
+			return p0 * Math.pow((1 - t), 5) + 5 * p1 * Math.pow((1 - t), 4) * t + 10 * p2 * Math.pow((1 - t), 3) * Math.pow(t, 2) + 10 * p3 * Math.pow((1 - t), 2) * Math.pow(t, 3) + 5 * p4 * (1 - t) * Math.pow(t, 4) + p5 * Math.pow(t, 5)
+		}
+		var curve = function(sx, sy, px, py, px1, py1, px2, py2, px3, py3, ex, ey, part, interval) {
+			var canvas = document.getElementById('curve');
+			var ctx = canvas.getContext('2d');
+			var i = 0
+			var bx = sx;
+			var by = sy;
+			ctx.beginPath();
+			ctx.moveTo(bx, by);
+			ctx.lineTo(px, py);
+			ctx.lineTo(px1, py1);
+			ctx.lineTo(px2, py2);
+			ctx.lineTo(px3, py3);
+			ctx.lineTo(ex, ey);
+			ctx.stroke();
+			return function() {
+				var x = formualFive(i / part, sx, px, px1, px2, px3, ex)
+				var y = formualFive(i / part, sy, py, py1, py2, py3, ey)
+
+				ctx.beginPath()
+				ctx.moveTo(bx, by)
+				ctx.lineTo(x, y)
+				ctx.strokeStyle = 'red'
+				ctx.stroke();
+				bx = x;
+				by = y;
+				console.log(x, y)
+				i++
+
+				if(i <= part) setTimeout(arguments.callee, interval)
+			}
+		}
+		curve(40, 300, 80, 60, 200, 230, 300, 110, 420, 150, 300, 230, 100, 10)()
+	</script>
+
+</html>

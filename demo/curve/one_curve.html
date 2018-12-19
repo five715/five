@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>一阶贝塞尔</title>
+</head>
+<body>
+	<canvas id="curve" width="500" height="500" style="border: 1px solid #000000;"></canvas>
+</body>
+<script type="text/javascript">
+	
+	function formulaOne(t,p0,p1){
+		return (1-t)*p0+t*p1
+	}
+	
+	var curve = function(sx,sy,ex,ey,part,interval){
+    	var canvas = document.getElementById('curve');
+        var ctx = canvas.getContext('2d');   
+        var i = 0
+        var bx = sx;
+        var by = sy;
+        ctx.beginPath();
+        ctx.moveTo(sx, sy);
+        ctx.lineTo(ex, ey);
+        ctx.stroke();
+		return function(){
+			var x = formulaOne(i/part,sx,ex)
+			var y = formulaOne(i/part,sy,ey)
+			
+			ctx.beginPath()
+			ctx.moveTo(bx,by)
+			ctx.lineTo(x,y)
+			ctx.strokeStyle = 'red'
+			ctx.stroke();
+			bx = x;
+			by = y;
+			console.log(x,y)
+			i++
+			
+			if(i <= part) setTimeout(arguments.callee,interval)
+		}
+	}
+	curve(50,50,300,300,10,1000)()
+	
+
+</script>
+</html>

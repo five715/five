@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>三阶贝塞尔</title>
+	</head>
+
+	<body>
+		<canvas id="curve" width="500" height="500" style="border: 1px solid #000000;"></canvas>
+	</body>
+	<script type="text/javascript">
+		function formualFour(t, p0, p1, p2, p3, p4) {
+			return p0 * Math.pow((1 - t), 4) + 4 * p1 * t * Math.pow((1 - t), 3) + 6 * p2 * Math.pow((1-t), 2) * Math.pow(t,2) + 4 * p3 * Math.pow(t, 3) * (1 - t) + p4 * Math.pow(t, 4)
+		}
+		var curve = function(sx, sy, px, py, px1, py1, px2, py2, ex, ey, part, interval) {
+			var canvas = document.getElementById('curve');
+			var ctx = canvas.getContext('2d');
+			var i = 0
+			var bx = sx;
+			var by = sy;
+			ctx.beginPath();
+			ctx.moveTo(bx, by);
+			ctx.lineTo(px, py);
+			ctx.lineTo(px1, py1);
+			ctx.lineTo(px2, py2);
+			ctx.lineTo(ex, ey);
+			ctx.stroke();
+			return function() {
+				var x = formualFour(i / part, sx, px, px1, px2, ex)
+				var y = formualFour(i / part, sy, py, py1, px2, ey)
+
+				ctx.beginPath()
+				ctx.moveTo(bx, by)
+				ctx.lineTo(x, y)
+				ctx.strokeStyle = 'red'
+				ctx.stroke();
+				bx = x;
+				by = y;
+				console.log(x, y)
+				i++
+
+				if(i <= part) setTimeout(arguments.callee, interval)
+			}
+		}
+		curve(40, 210, 20, 60, 240, 60, 390, 210, 450, 80, 100, 10)()
+	</script>
+
+</html>

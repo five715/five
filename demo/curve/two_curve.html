@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>二阶贝塞尔</title>
+</head>
+<body>
+	<canvas id="curve" width="500" height="500" style="border: 1px solid #000000;"></canvas>
+</body>
+<script type="text/javascript">
+	function formulaTwo(t,p0,p1,p2){
+		return Math.pow((1-t),2)*p0 + t*2*(1-t)*p1 + Math.pow(t,2)*p2
+	}
+	
+	var curve = function(sx,sy,px,py,ex,ey,part,interval,func){
+    	var canvas = document.getElementById('curve');
+        var ctx = canvas.getContext('2d');   
+        var i = 0
+        var bx = sx;
+        var by = sy;
+        ctx.beginPath();
+        ctx.moveTo(bx, by);
+       	ctx.lineTo(px,py);
+       	ctx.lineTo(ex,ey);
+        ctx.stroke();
+		return function(){
+			var x = formulaTwo(i/part,sx,px,ex)
+			var y = formulaTwo(i/part,sy,py,ey)
+			
+			ctx.beginPath()
+			ctx.moveTo(bx,by)
+			ctx.lineTo(x,y)
+			ctx.strokeStyle = 'red'
+			ctx.stroke();
+			bx = x;
+			by = y;
+			console.log(x,y)
+			i++
+			
+			if(i <= part) setTimeout(arguments.callee,interval)
+		}
+	}
+	curve(50,50,300,300,400,60,100,10)()
+	
+
+</script>
+</html>

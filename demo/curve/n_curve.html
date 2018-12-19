@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>n阶贝塞尔</title>
+</head>
+
+<body>
+<canvas id="curve" width="500" height="500" style="border: 1px solid #000000;"></canvas>
+</body>
+<script type="text/javascript">
+function formualN(t, arr) {
+	var l = arr.length
+	var num = 0;
+	for(var i = 0; i < l; i++) {
+//		num = countNum(l,i+1)+"*P"+i+"*Math.pow((1-t),"+(l-i-1)+")*Math.pow(t,"+(l-(l-i))+")"
+		num += countNum(l, i + 1) * arr[i] * Math.pow((1 - t), (l - i - 1)) * Math.pow(t, (l - (l - i)))
+	}
+	return num
+}
+
+function countNum(n, m) {　　
+	if(m > n) return false;　　
+	switch(m) {　　　　
+		case 1:　　
+		case n:
+			return 1;　　　　
+		case 2:　　　　
+		case n - 1:
+			return n - 1;　　　　
+		default:
+			return countNum(n - 1, m) + countNum(n - 1, m - 1);　　
+	}
+}
+var curve = function(data, part, interval) {
+	var canvas = document.getElementById('curve');
+	var ctx = canvas.getContext('2d');
+	var _i = 0
+	var bx = data[0][0];
+	var by = data[0][1];
+	var _x = [],
+		_y = []
+	ctx.beginPath();
+	ctx.moveTo(bx, by);
+	for(var i = 0; i < data.length; i++) {
+		var x = data[i][0]
+		var y = data[i][1]
+		_x.push(x)
+		_y.push(y)
+		ctx.lineTo(x, y)
+	}
+	ctx.stroke();
+	return function() {
+		var x = formualN(_i / part, _x)
+		var y = formualN(_i / part, _y)
+
+		ctx.beginPath()
+		ctx.moveTo(bx, by)
+		ctx.lineTo(x, y)
+		ctx.strokeStyle = 'red'
+		ctx.stroke();
+		bx = x;
+		by = y;
+		console.log(x, y)
+		_i++
+
+		if(_i <= part) setTimeout(arguments.callee, interval)
+	}
+}
+var data = [
+	[40, 300],
+	[80, 60],
+	[200, 230],
+	[300, 110],
+	[420, 150],
+	[300, 230],
+	[100, 300]
+	]
+curve(data, 100, 20)()
+</script>
+
+</html>
