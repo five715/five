@@ -2,7 +2,7 @@
   "name": "xh",
   "version": "1.0.0",
   "description": "A Mpvue project",
-  "author": "吴帅鹏 <shuaipeng@wushuang.me>",
+  "author": "",
   "private": true,
   "scripts": {
     "dev:wx": "node build/dev-server.js wx",

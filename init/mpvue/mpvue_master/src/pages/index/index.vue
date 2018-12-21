@@ -1,7 +1,6 @@
 <template>
   <div class="container">
       <!-- 图片引用的两种方式 -->
-      <img class="girl" :src="imgSrc +'static/img/girl.png'" alt="">
       <img class="logo" src="../../assets/logo.png" alt="">
     <card :text="motto"></card>
     <form class="form-container">
