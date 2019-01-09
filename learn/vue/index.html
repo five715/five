@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Vue</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+<script src="js/libs/vue.min.js"></script>
+<!--<script src="https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js"></script>-->
+<link rel="stylesheet" href="http://dbushell.github.com/Pikaday/css/pikaday.css">
+<script src="http://dbushell.github.com/Pikaday/pikaday.js"></script>
+</head>
+<body>
+	<ul id="For">
+		<li v-for="item in items">
+			{{item.message}}-{{item.age}}
+		</li>
+		<li v-for="arr in arrs" >
+			{{arr}}
+		</li>
+		<li v-for="number in evenNumbers" v-on:click="say(number)">{{number}}</li>
+		<li is="todo-item" v-for="(n,index) in numbers" v-bind:title="n" v-on:remove="numbers.splice(index, 1)">{{n}}</li>
+		<form v-on:submit.prevent = "addNewTodo">
+			<input placeholder="E.g. Feed the cat" id="new-todo" v-model="newTodoText"/>
+			<button>add</button>
+		</form>
+		<div :style="{fontSize:fontSize+'em'}">
+			<blog-post v-on:enlarge-text="onEnlargeText" v-bind:post='post'></blog-post>
+		</div>
+		<base-checkbox v-model="lovingVue"></base-checkbox>
+		<base-layout>
+			<h1 slot="header">hhhhhh</h1>
+			<template slot="footer">
+				<h4>h4h4h4h4h4</h4>
+				<input ref="startDateInput"></input>
+				<input ref="endDateInput"></input>
+			</template>
+		</base-layout>
+		<tree-folder :folder="folder"></tree-folder>
+		<hello-world></hello-world>
+	</ul>
+
+</body>
+<script src="http://pv.sohu.com/cityjson?ie=utf-8"></script>
+<script type="text/javascript">
+console.log(returnCitySN)
+</script>
+<script type="text/x-template" id="hello-world-template">
+	<p>hello</p>
+</script>
+<script type="text/javascript">
+	Vue.component('hello-world',{
+		template:"#hello-world-template"
+	})
+	Vue.component('todo-item',{
+		template:'<li v-once>{{title}}<button v-on:click="$emit(\'remove\')">Remove</button></li>',
+        props:['title']
+	})
+	Vue.component('blog-post', {
+	  props: ['post'],
+	  template: '\
+	    <div class="blog-post">\
+	      <h3>{{ post.title }}</h3>\
+	      <button v-on:click="$emit(\'enlarge-text\',\'0.01\')">\
+	        Enlarge text\
+	      </button>\
+	      <div v-html="post.content"></div>\
+	    </div>\
+	  '
+	})
+	Vue.component('base-checkbox',{
+		model:{
+			prop:'checked',
+			event:'change'
+		},
+		props:{
+			checked:Boolean
+		},
+		template:'<input type="checked" v-bind:checked="checked" v-on:change="$emit(\'change\',$event.target.checked)"></input>'
+	})
+	Vue.component('base-layout',{
+		template:'<div class="container"><header><slot name="header">header</slot></header><main><slot>main</slot></main><footer><slot name="footer">footer</slot></footer></div>'
+	})
+	Vue.component('tree-folder',{
+//		name:'tree-folder-contents',
+		props:['folder'],
+		template:'<p><span>{{folder.name}}<tree-folder-contents :children="folder.children"></tree-folder-contents></span></p>'
+	})
+	Vue.component('tree-folder-contents',{
+		name:'tree-folder',
+		props:['children'],
+		template:'<ul><li v-for="child in children"><tree-folder v-if="child.children" :folder="child"></tree-folder><span v-else>{{child.name}}</span></li></ul>'
+	})
+	
+	var example = new Vue({
+		el:"#For",
+		data:{
+			folder:{
+				name:"floder",
+				children:{
+					name:{
+						name:"children"
+					},
+					children:{
+						name:"floder-children"
+					}
+				}
+			},
+			newTodoText:'',
+			items:[
+				{message:"Foo",age:0},
+				{message:"Bar",age:0}
+			],
+			post:{
+				'title':12322221,
+				'content':7897897978
+			},
+			arrs:['a','b','c'],
+			numbers:[1,2,3,4,5,6],
+			fontSize : 1
+		},
+		computed:{
+			evenNumbers : function(){
+				return this.numbers.filter(function(number){
+					return number % 2 == 0
+				})
+			}
+		},
+		mounted: function () {
+		  this.attachDatepicker('startDateInput')
+		  this.attachDatepicker('endDateInput')
+		},
+		methods: {
+			attachDatepicker: function (refName) {
+			    var picker = new Pikaday({
+			      field: this.$refs[refName],
+			      format: 'YYYY-MM-DD'
+			    })
+			
+			    this.$once('hook:beforeDestroy', function () {
+			      picker.destroy()
+			    })
+			},
+			lovingVue:function(e){
+				console.log(12321,e)
+			},
+			addNewTodo:function(){
+				if(this.newTodoText){			
+					this.numbers.push(this.newTodoText)
+					this.newTodoText = ''
+				}else{
+					alert("不能为空")
+				}
+			},
+			say:function(msg){
+				alert(msg)
+			},
+			onEnlargeText: function (enlargeAmount) {
+			    this.fontSize += enlargeAmount/1
+			}
+		
+		},
+		created(){
+		}
+	})
+	example.items[0].message = "Foo1"
+	Vue.set(example.arrs,0,"FOOOO!")
+	example.$set(example.arrs,1,"abcdefg")
+//	example.items[0] = Object.assign({},example.items[0],{age:123})
+
+
+</script>
+</html>
