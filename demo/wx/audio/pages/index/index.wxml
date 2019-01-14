@@ -1,0 +1,4 @@
+<!--index.wxml-->
+<view class="container">
+  <view bindtap='onAudio' style="color:{{item.color}}" wx:for="{{sounds}}" wx:key="" wx:for-index="i" id="sounds{{i}}" data-i="{{i}}" data-src="/sounds/{{item.src}}.mp3" >{{item.src}}</view>
+</view>
