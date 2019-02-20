@@ -1,4 +1,12 @@
 <!--index.wxml-->
 <view class="container">
-  <view bindtap='onAudio' style="color:{{item.color}}" wx:for="{{sounds}}" wx:key="" wx:for-index="i" id="sounds{{i}}" data-i="{{i}}" data-src="/sounds/{{item.src}}.mp3" >{{item.src}}</view>
+  <view class="audio" bindtap='onAudio' style="color:{{item.color}}" wx:for="{{sounds}}" wx:key="" wx:for-index="i" id="sounds{{i}}" data-i="{{i}}" data-src="/sounds/{{item.src}}.mp3" >{{item.src}}</view>
+  <view wx:if="{{!isStart}}" bindtap='onStart'>开始</view>
+  <view wx:else bindtap='onEnd'>结束</view>
+  <text>{{time}}</text>
+  <view bindtap='onPlay'>播放</view>
+  <text>{{t}}</text>
 </view>
+
+
+

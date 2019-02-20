@@ -1,1 +1,2 @@
-view{height: 80rpx;}
+.container{height: 1500rpx;width: 750rpx;position: relative;}
+.audio{width: 187.5rpx;height: 187.5rpx; float: left;border: 1px solid #000; overflow: hidden; box-sizing: border-box;font-size: 20rpx;}
