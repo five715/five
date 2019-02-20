@@ -8,31 +8,11 @@
 
 <body>
 <canvas id="curve" width="500" height="500" style="border: 1px solid #000000;"></canvas>
+<a class="weapp_text_link" data-miniprogram-appid="wxe5f52902cf4de896" data-miniprogram-path="page/component/index" data-miniprogram-nickname="小程序示例" href="" target="_blank">打开小程序示例</a>
+<input type="date" name="" id="" value="" />
 </body>
 <script type="text/javascript">
-function formualN(t, arr) {
-	var l = arr.length
-	var num = 0;
-	for(var i = 0; i < l; i++) {
-//		num = countNum(l,i+1)+"*P"+i+"*Math.pow((1-t),"+(l-i-1)+")*Math.pow(t,"+(l-(l-i))+")"
-		num += countNum(l, i + 1) * arr[i] * Math.pow((1 - t), (l - i - 1)) * Math.pow(t, (l - (l - i)))
-	}
-	return num
-}
 
-function countNum(n, m) {　　
-	if(m > n) return false;　　
-	switch(m) {　　　　
-		case 1:　　
-		case n:
-			return 1;　　　　
-		case 2:　　　　
-		case n - 1:
-			return n - 1;　　　　
-		default:
-			return countNum(n - 1, m) + countNum(n - 1, m - 1);　　
-	}
-}
 var curve = function(data, part, interval) {
 	var canvas = document.getElementById('curve');
 	var ctx = canvas.getContext('2d');
@@ -67,15 +47,37 @@ var curve = function(data, part, interval) {
 
 		if(_i <= part) setTimeout(arguments.callee, interval)
 	}
+	function formualN(t, arr) {
+		var l = arr.length
+		var num = 0;
+		for(var i = 0; i < l; i++) {
+			num += countNum(l, i + 1) * arr[i] * Math.pow((1 - t), (l - i - 1)) * Math.pow(t, (l - (l - i)))
+		}
+		return num
+	}
+	
+	function countNum(n, m) {　　
+		if(m > n) return false;　　
+		switch(m) {　　　　
+			case 1:　　
+			case n:
+				return 1;　　　　
+			case 2:　　　　
+			case n - 1:
+				return n - 1;　　　　
+			default:
+				return countNum(n - 1, m) + countNum(n - 1, m - 1);　　
+		}
+	}
 }
 var data = [
-	[40, 300],
-	[80, 60],
-	[200, 230],
-	[300, 110],
-	[420, 150],
-	[300, 230],
-	[100, 300]
+	[300, 100],
+	[300, 200],
+	[300, 300],
+	[200, 200],
+	[100, 300],
+	[100, 200],
+	[100, 100]
 	]
 curve(data, 100, 20)()
 </script>
