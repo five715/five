@@ -5,13 +5,14 @@ CubeShow is the class of game,I defined it to the global,you can construct anywh
 ## Build Setup
 
 ``` bash
-# install dependencies
+
+##  设置bat文件   
+start cmd /k "echo 压缩图片 && cd/d D:\working\git\fiveGit\webpack\imgmin && npm run build && start dist\src && exit"
+
+#1 install dependencies
 npm install
 
-# serve with hot reload at localhost:5000
-npm run server
-
-# build for production with minification
+#2 build for production with minification
 npm run build
 ```
 
