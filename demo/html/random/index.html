@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title></title>
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+</head>
+<body>
+	
+</body>
+<script type="text/javascript">
+	
+
+var _n = 35,
+	_num = 0,
+	_b = 0;
+
+for(var i = 1; i <= 10 ; i++){
+	if(_num < 35){
+		if(i<7){
+			if(i%2){
+				var n = parseInt(Math.random()*8+1);
+				_b = n;
+			}else{
+				var n = 9-_b;
+			}
+		}else if( i == 7 ){
+			var n = 4
+		}else{
+			var n = parseInt(Math.random()*_n+1);
+		}
+		_n -= n
+		_num += n;
+		
+		console.log(n,_n)
+		
+		$("body")[0].innerHTML += n + " + "
+	}
+}
+
+$("body")[0].innerHTML += " = "+ _num
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+</html>
