@@ -1,0 +1,48 @@
+* {
+  border-image-source: initial;
+  border-image-slice: initial;
+  border-image-width: initial;
+  border-image-outset: initial;
+  border-image-repeat: initial;
+  font-family: 微软雅黑;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  margin: 0px;
+  padding: 0px;
+  border-width: 0px;
+  border-color: initial;
+  border-style: none;
+  list-style: none;
+  outline: none;
+}
+body {
+  overflow-x: hidden;
+  background-color: #fff;
+}
+html {
+  min-width: 800px;
+}
+img {
+  width: 100%;
+  display: block;
+}
+a {
+  color: inherit;
+}
+.box {
+  min-width: 800px;
+}
+#Game {
+  margin: 0 auto;
+  position: relative;
+  display: block;
+  border: 1px solid #000000;
+}
+.box {
+  width: 800px;
+  margin: 0 auto;
+}
+.btn_random {
+  font-size: 3rem;
+  cursor: pointer;
+}
