@@ -46,3 +46,8 @@ a {
   font-size: 3rem;
   cursor: pointer;
 }
+ul {
+  width: 40%;
+  display: inline-block;
+  font-size: 3rem;
+}

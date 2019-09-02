@@ -2,7 +2,9 @@ var Game = {};
 Game.VER = '1.0.0';
 Game.Event = {
     ATTACK : 'attack',//攻击
-    DIE : 'die' //死亡
+    DIE : 'die', //死亡
+    ATTRMAP:'attrMap',  //显示地图属性
+    ATTRTROOPS:'attrTroops' //显示部队属性
 }
 
 /**
@@ -61,7 +63,27 @@ Game.main = function (canvas) {
         createjs.Touch.enable(_this);
 
         _map = new Game.map(WIDTH,HEIGHT);
+        _map.on(Game.Event.ATTRMAP,mapAttr)
+        _map.on(Game.Event.ATTRTROOPS,troopsAttr)
         _this.addChild(_map);
+    }
+    /**
+     * 地图块属性
+     */
+    function mapAttr(e){
+        $("#data li").eq(0).find("b").text(e.data.name)
+        $("#data li").eq(1).find("b").text(e.data.x)
+        $("#data li").eq(2).find("b").text(e.data.y)
+        
+    }
+    /**
+     * 部队属性
+     */
+    function troopsAttr(e){
+        var obj = e.data;
+        var lis = [];
+        for(o in obj) lis.push("<p>"+o+":"+obj[o]+"</p>")
+        $("#attr li").html(lis)
     }
     _this.addTroops =function(){
         _map.addTroops();
@@ -131,7 +153,12 @@ Game.map = function(w,h){
      */
     function onEventAttack(e){
         var obj = __troops.getChildByName(e.data)
-        obj.onAttack();
+        console.log(obj)
+        
+        var evt = new createjs.Event(Game.Event.ATTRTROOPS)
+        evt.data = obj.onAttack();
+        _this.dispatchEvent(evt);
+        
     }
 
     /**
@@ -174,17 +201,17 @@ Game.map = function(w,h){
             },350)
 
 
-        $("#data li").eq(0).find("b").text(this.data.name)
-        $("#data li").eq(1).find("b").text(this.data.x)
-        $("#data li").eq(2).find("b").text(this.data.y)
+        var evt = new createjs.Event(Game.Event.ATTRMAP)
+        evt.data = this.data;
+        _this.dispatchEvent(evt);
     }
     /**
      * 添加元素块
      */
     _this.addColor = function(x,y,obj){
         var boxes = new createjs.Shape();
-        boxes.graphics.beginStroke("#000000").f(obj.color).dr(x*W,y*H,WIDTH,HEIGHT)
-        boxes.name = x+'_'+y;
+        boxes.graphics.beginStroke("#000000").f(obj.color).dr(x*W,y*H,W,H)
+        boxes.name = (x+1)+'_'+(y+1);
         return boxes;
     }
     /**
@@ -210,9 +237,10 @@ Game.map = function(w,h){
             .call(function(){
                 var troops = new Game.troops();
                 troops.on(Game.Event.DIE, function(){
+                    __troopsArr.splice(__troopsArr.indexOf(troops.name),1)
                     __troops.removeChild(troops)
-                    //删除数组 _troopsArr;
                 })
+                console.log(n)  
                 troops.x = i*W-W;
                 troops.y = j*H-H;
                 troops.name = n;
@@ -227,10 +255,20 @@ Game.map = function(w,h){
             _this.addTroops();
         }
     }
+    /**
+     * 显示攻击按钮
+     */
     _this.showBtn =function(e){
         var boxes = __boxess.getChildByName(this.data.name)
 
-        console.log(boxes.data)
+        var evt = new createjs.Event(Game.Event.ATTRMAP)
+        evt.data = boxes.data;
+        _this.dispatchEvent(evt);
+        
+        var evt = new createjs.Event(Game.Event.ATTRTROOPS)
+        evt.data = this.attr;
+        _this.dispatchEvent(evt);
+
         _attack.show(this.data.x*W-W,this.data.y*H,this.name)
     }
     _this.init();
@@ -263,9 +301,10 @@ Game.troops = function(){
             font:"18px Arial",
             color:"#fff"
         },
-        EDGE = 5;
+        EDGE = 5,
         W = 100,
         H = 100;
+    var __amount = null
 
     _this.init = function(){
         _this.Container_constructor();	//构造
@@ -310,9 +349,7 @@ Game.troops = function(){
             _this.attr.amount = __amount.text = Math.floor(xHp/50)
             _this.attr.hp = Math.floor(xHp%50)
         }
-
-
-        
+        return _this.attr;
 
         console.log(zHp,xHp,random);
     }
