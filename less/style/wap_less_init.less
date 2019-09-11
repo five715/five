@@ -197,6 +197,18 @@
     display: block;
 }
 
+
+.arrow(@t,@l,@w,@W:@W,@H:@H){
+	.arrow{
+		.main(@t,@l,@w,@W,@H);
+	}
+	.next{
+		left: auto;
+		.right(@l);
+	}
+}
+
+
 .hint(@index:9997){
     /* 样式放在结尾，防止 base64 图片造成拥塞 */
     @keyframes rotation {
