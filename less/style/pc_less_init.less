@@ -6,7 +6,8 @@
     html{min-width: @width+0px}
     img{width: 100%;display: block;}
     a{color: inherit;}
-    .box{min-width: @width+0px};
+    .box{min-width: @width+0px}
+	.con{width: @width+0px; margin:0 auto; height:100%; position: relative;}
 }
 .P(){
     p{font-family: PingFangSC;font-style: normal;font-stretch: normal;letter-spacing: normal;}
@@ -51,6 +52,19 @@
     left: @left_x+0px;
     width: @width_w+0px;
 }
+
+
+.arrow(@t,@l,@w,@W:@W,@H:@H){
+	.arrow{
+		.main(@t,@l,@w);
+	}
+	.next{
+		left: auto;
+		right:@l+0px;
+	}
+}
+
+
 .mainContent(@top_y, @width_w, @max_W : @W, @max_H : @H){
     position: absolute;
     top: @top_y+0px;
