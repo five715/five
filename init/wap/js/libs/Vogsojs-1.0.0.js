@@ -26,12 +26,12 @@ Vogsojs.alert = function(str) {
 
     /**弹窗出现**/
     _this.show = function(){
-        $(".maskAlert").show();
+        $(".maskCon").show();
         $(".alertSure").one("click",_this.hide);
     };
     /**弹窗消失**/
     _this.hide = function(){
-        $(".maskAlert").hide()
+        $(".maskCon").hide()
     };
 
     _this.show();
@@ -47,7 +47,7 @@ Vogsojs.init = function(){
 
     //console.log(w,h);
     $("body").css("height",h);
-    $("body").append("<div class='maskAlert'></div>");
+    $("body").append("<div class='maskCon'><div class='maskAlert'></div></div>");
     $(".maskAlert").append("<div class='alertText'>敬请期待</div>");
     $(".maskAlert").append("<div class='alertLine'></div>");
     $(".maskAlert").append("<div class='alertSure'>确定</div>");
