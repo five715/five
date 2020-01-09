@@ -1,6 +1,57 @@
-*{border-image-source: initial;  border-image-slice: initial;  border-image-width: initial;  border-image-outset: initial;
-    border-image-repeat: initial;  font-family: 微软雅黑;  text-decoration: none;  -webkit-tap-highlight-color: transparent;  margin: 0px;
-    padding: 0px;  border-width: 0px;  border-color: initial;  border-style: none;  list-style: none;  outline: none;}
-body{overflow-x: hidden; background-color: #091829;}
-html{min-width: 1000px;}
-img{width: 100%;}
+* {
+  border-image-source: initial;
+  border-image-slice: initial;
+  border-image-width: initial;
+  border-image-outset: initial;
+  border-image-repeat: initial;
+  font-family: 微软雅黑;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  margin: 0px;
+  padding: 0px;
+  border-width: 0px;
+  border-color: initial;
+  border-style: none;
+  list-style: none;
+  outline: none;
+}
+body {
+  overflow-x: hidden;
+  background-color: #fff;
+}
+html {
+  min-width: 1040px;
+}
+img {
+  width: 100%;
+  display: block;
+}
+a {
+  color: inherit;
+}
+.box {
+  min-width: 1040px;
+}
+.con {
+  width: 1040px;
+  margin: 0 auto;
+  height: 100%;
+  position: relative;
+}
+.yes {
+  display: none;
+}
+.no {
+  display: block;
+}
+.active .yes {
+  display: block;
+}
+.active .no {
+  display: none;
+}
+.kv {
+  position: relative;
+  background: url("../images/bg_01.jpg") 50% no-repeat;
+  height: 1056px;
+}

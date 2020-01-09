@@ -1,6 +1,6 @@
 .maskCon{position: fixed;top: 0; left: 0; width: 100%; height: 100%; z-index: 999; display: none;}
 .maskAlert{position: absolute; left: 50%; top: 50%; background: #fff;}
-.wapMask{width: 65%;  left: 17.5%; top: 30%; }
+.wapMask{width: 65%;  left: 17.5%; top: 30%; border-radius: 8px;}
 .wapText{width: 88%; font-size: 20px;  padding: 10% 6% 10% 6%; line-height: 70px; text-align: center}
 .wapSure{width: 100%; color: #000; font-size: 23px; line-height: 50px; height: 50px; text-align: center}
 .alertLine{width: 100%; background: #dadada; height: 2px; position: absolute; left: 0; bottom: 50px}
