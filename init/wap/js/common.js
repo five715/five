@@ -8,6 +8,7 @@ $(function(){
 			$("html").css("font-size",size+"px");
 		}
 	})
+	funcSlick($("#kv_slick"),-1);
 //	$("#fullpage").fullpage({
 //		'css3' : false,
 //		verticalCentered : !1,

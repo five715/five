@@ -2,7 +2,7 @@
 @box_h: 1334;
 @W: @box_w;
 @H: @box_h;
-@import "D:\working\git\five\less\style/wap_less_init"; 
+@import "D:\working\git\fiveGit\less\style/wap_less_init"; 
 //@import "H:\无双\GIT\five\less\style/wap_less_init"; 
 
 .reset();
@@ -84,4 +84,24 @@
         .mainContent(804,448);
     }
 
+}
+.slide{
+    .slick-dots {
+        text-align: center;
+    }
+    .slick-dots li {
+        .width(10);
+        display: inline-block;
+        margin: 0 0.2rem;
+        background: url(../images/ioc_dot_no.png) no-repeat;
+        background-size: 100%;
+    }
+    .slick-dots li button {
+        opacity: 0;
+    }
+    .slick-dots .slick-active {
+        .width(40);
+        background: url(../images/ioc_dot_yes.png) no-repeat;
+        background-size: 100%;
+    }
 }

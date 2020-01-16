@@ -53,21 +53,23 @@ Vogsojs.init = function(){
     $(".maskAlert").append("<div class='alertSure'>确定</div>");
 
     
+    Vogsojs.btnClick(".btn_click")
 
-	$(".btn_click").on("touchstart mousedown", function () {
+}
+Vogsojs.btnClick = function(obj){
+	$(obj).on("touchstart mousedown", function () {
 		var _this = $(this)
 		_this.css("opacity", "0.8")
 		setTimeout(function () {
 			_this.css("opacity", "")
 		}, 1000)
 	})
-	$(".btn_click").on("touchend mouseup", function () {
+	$(obj).on("touchend mouseup", function () {
 		var _this = $(this)
 		setTimeout(function () {
 			_this.css("opacity", "")
 		}, 100)
 	})
-
 }
 
 
