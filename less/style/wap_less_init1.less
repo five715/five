@@ -1,17 +1,16 @@
 .reset(@bgColor : #fff,@max_width : @W,@font:"微软雅黑"){
-    html{font-size:31.25%;font-family:@font;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}
+    html{font-size:45px;font-family:@font;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}
     body,h3,h4,h5,h6,ul,li,ol,div,dl,dt,dd,p,img,a,form{margin:0;padding:0;font-family:@font;-webkit-tap-highlight-color:rgba(0,0,0,0);appearance:none;}
     div{width:auto;border: none;outline: none;outline-style: none;}
     body,html{padding:0;margin:0;font-family:Helvetica,STHeiti,Microsoft Yahei;background-color:@bgColor;overflow:visible;line-height:1.4;color:#110e15;-webkit-text-size-adjust:100%!important;}
-    img{vertical-align:middle;border:0 none;width:100%;display:inline-block;}
+    img{vertical-align:middle;border:0 none;width:100%;display:block;}
     li{list-style:none;list-style-position:outside;}
     a{text-decoration:none;overflow:hidden;opacity:1;outline:none;}
     a:hover{color:#000;text-decoration:none;}
     ul{list-style:none;}
     input,select{vertical-align:middle;padding:0;margin:0;border:none;outline:none;outline-style:none}
-    body{overflow-x: hidden; max-width: @max_width+0px; margin: 0 auto;}
     canvas{width:100%;display: block};
-	.box{position:relative;width:100%;max-width: @max_width+0px;}
+	.box{position:relative;width:10rem;}
 }
 .resetP(@num:1){
     text-overflow: ellipsis;
@@ -56,9 +55,6 @@
     background: rgba(0,0,0,@clarity);
 	z-index:@z;
 }
-.fontSize(@s,@max_W:@W){
-	font-size:@s/10rem;
-}
 .slide3d(@width:@W){
 	.slick_3d {
 	  -webkit-perspective: @width;
@@ -89,13 +85,13 @@
     display: none;
 }
 .top(@y, @box_H : @H){
-    top: (@y / @box_H) * 100%
+    top: @y /75rem
 }
 .bottom(@y, @box_H : @H){
-    bottom: (@y / @box_H) * 100%
+    bottom: @y / 75rem
 }
 .left(@x, @box_W : @W){
-    left: (@x / @box_W) * 100%
+    left: @x / 75rem
 }
 .mleft(@x, @box_W : @W){
     margin-left: (@x / @box_W) * 100%
@@ -104,13 +100,13 @@
     right: (@x / @box_W) * 100%    
 }
 .leftContent(@x, @box_W : @W){    
-    left : ((@box_W - @x) / 2 /@box_W) * 100%;
+    left : (@box_W - @x) / 2 /75rem
 }
 .width(@w, @box_W : @W){
-    width: (@w / @box_W) * 100%
+    width: @w / 75rem
 }
 .height(@h, @box_H : @H){
-    height: (@h / @box_H) * 100%;
+    height: @h / 75rem
 }
 .main(@top_y, @left_x, @width_w, @max_W : @W, @max_H : @H){
     position: absolute;
@@ -129,11 +125,14 @@
     .left(@left_x, @max_W);
     .width(@width_w, @max_W);
 }
+.fontSize(@s,@max_W:@W){
+	font-size:@s/75rem
+}
 .mainP(@top_y, @left_x, @P, @max_W : @W, @max_H : @H){
     position: absolute;
     .top(@top_y, @max_H);
     .left(@left_x, @max_W);
-    font-size: @P;
+    .fontSize(@P,max_W);
 }
 .mainRight(@top_y, @right_x, @width_w, @max_W : @W, @max_H : @H){
     position: absolute;
